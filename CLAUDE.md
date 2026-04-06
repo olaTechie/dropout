@@ -88,8 +88,12 @@ R(s, a, s') = +1.0 (DTP3 completed) + 0.3 (next dose received) − λ × cost(a)
 Default λ = 0.001
 
 ### Data File Paths
-- DHS KR: data/raw/dhs/nga_2024/NGKR8BFL.DTA
-- Geospatial: data/raw/geospatial/NGGC8AFL.csv
+- DHS KR (2024): data/dhs/raw/nga_2024/NGKR8BFL.dta
+- DHS IR (2024): data/dhs/raw/nga_2024/NGIR8BFL.dta
+- DHS HR (2024): data/dhs/raw/nga_2024/NGHR8BFL.dta
+- DHS GPS (2024): data/dhs/raw/nga_2024/NGGE8BFL/
+- Geospatial covariates: data/raw/NGGC8AFL.csv
+- GADM shapefiles: data/shapefiles/gadm/gadm41_NGA_*.shp
 - Processed outputs: data/processed/
 
 ### Handoff Protocol

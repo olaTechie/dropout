@@ -1,5 +1,8 @@
 # DHS data — cannot be redistributed
 data/raw/
+data/dhs/
+data/shapefiles/
+data/processed/
 
 # Large model files
 outputs/stage1/*.pkl

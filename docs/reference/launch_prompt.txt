@@ -20,5 +20,6 @@ Before dispatching each agent, verify:
 - Update docs/pipeline_audit_log.md with stage completion status
 
 Data files are at:
-- data/raw/dhs/nga_2024/NGKR8BFL.DTA
-- data/raw/geospatial/NGGC8AFL.csv
+- data/dhs/raw/nga_2024/NGKR8BFL.dta
+- data/raw/NGGC8AFL.csv
+- data/shapefiles/gadm/gadm41_NGA_*.shp
