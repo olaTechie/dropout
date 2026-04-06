@@ -4,7 +4,7 @@
 
 1. **Offline reinforcement learning for optimising sequential interventions to reduce DTP vaccine dropout in Nigeria: a prediction model study using the 2024 Demographic and Health Survey**
 
-2. **Optimising the timing and targeting of interventions across the DTP vaccination schedule using offline reinforcement learning: a four-stage analytical framework applied to the Nigeria DHS 2024**
+2. **Optimising the timing and targeting of interventions to reduce DTP vaccination dropout using offline reinforcement learning: a four-stage analytical framework applied to the Nigeria DHS 2024** ← SELECTED
 
 3. **Dynamic features outweigh static determinants in predicting DTP vaccination dropout: implications from machine learning and offline reinforcement learning using the Nigeria DHS 2024**
 
