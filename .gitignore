@@ -1,0 +1,23 @@
+# DHS data — cannot be redistributed
+data/raw/
+
+# Large model files
+outputs/stage1/*.pkl
+outputs/stage2/*.d3
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# EDA reports (large HTML)
+outputs/stage0/*.html
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
