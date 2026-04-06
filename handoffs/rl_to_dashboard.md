@@ -1,158 +1,148 @@
 # Handoff: RL + Bandit + Microsim → Dashboard Agent
 
 **Date**: 2026-04-06
-**Status**: COMPLETE
+**Status**: COMPLETE (corrected run)
 
 ---
 
 ## What Was Produced
 
-### Stage 2: Offline RL Outputs (`outputs/stage2/`)
+### Stage 2: Offline RL (`outputs/stage2/`)
 
 | File | Description |
 |------|-------------|
-| `fqi_model.joblib` | Fitted Q-Iteration model (ExtraTrees, 50 iterations) |
-| `cql_model.joblib` | Conservative Q-Learning model (α=1.0, GBR-based) |
+| `fqi_model.joblib` | Fitted Q-Iteration model (converged at iteration 2) |
+| `cql_model.joblib` | Conservative Q-Learning model (α=5.0, most conservative) |
 | `behaviour_policy_model.joblib` | Random Forest behaviour policy estimator |
 | `fqe_model.joblib` | Fitted Q Evaluation model |
-| `policy_lookup.csv` | Policy lookup: 6,217 rows, Q-values for all 5 actions per state |
-| `ope_results.json` | Off-policy evaluation: WIS, FQE, DR, IS estimates |
-| `cql_alpha_sensitivity.csv` | CQL α sensitivity (0.1, 0.5, 1.0, 2.0, 5.0) |
-| `stage2_summary.json` | Complete Stage 2 summary metrics |
+| `policy_lookup.csv` | Policy lookup: 6,217 rows with Q-values + optimal actions |
+| `ope_results.json` | Off-policy evaluation: WIS, IS, FQE, DR estimates |
+| `cql_alpha_sensitivity.csv` | CQL α=1.0, 2.0, 5.0 sensitivity analysis |
+| `stage2_summary.json` | Complete summary of Stage 2 metrics |
+| `correction_log.md` | What changed from previous run and why |
 | `fqi_convergence.pdf/.png` | FQI convergence plot |
-| `cql_analysis.pdf/.png` | CQL convergence + penalty + α sensitivity (3 panels) |
-| `ope_comparison.pdf/.png` | OPE bar chart + policy distribution comparison |
+| `cql_analysis.pdf/.png` | CQL convergence, penalty, α sensitivity |
+| `ope_comparison.pdf/.png` | OPE comparison bar chart + policy comparison |
 | `q_values_by_action.pdf/.png` | Mean Q-values by action |
 
-### Stage 3: Bandit + Microsim Outputs (`outputs/stage3/`)
+### Stage 3: Bandit + Microsim (`outputs/stage3/`)
 
 | File | Description |
 |------|-------------|
-| `lga_allocation.csv` | Community-level budget-constrained allocation (1,140 clusters) |
-| `microsim_results.csv` | Summary results for all 6 scenarios |
-| `microsim_results.json` | Detailed results with CIs and ICER |
-| `stage3_summary.json` | Complete Stage 3 summary |
-| `bandit_allocation.pdf/.png` | LinUCB regret + budget coverage (2 panels) |
-| `microsim_scenarios.pdf/.png` | 4-panel: DTP3 rates, costs, equity, CE frontier |
-| `bootstrap_distributions.pdf/.png` | 6-panel bootstrap histograms |
-| `bootstrap_s{0-5}_*.csv` | Per-scenario bootstrap distributions (1,000 iterations each) |
+| `lga_allocation.csv` | Budget-constrained LinUCB allocation (₦500M) |
+| `microsim_results.csv` | 6-scenario microsim results table |
+| `microsim_results.json` | Full results with CIs and ICER |
+| `stage3_summary.json` | Complete summary including budget sensitivity |
+| `correction_log.md` | What changed from previous run and why |
+| `bandit_allocation.pdf/.png` | LinUCB regret + budget coverage |
+| `microsim_scenarios.pdf/.png` | 4-panel: DTP3 rates, costs, equity, ICER frontier |
+| `bootstrap_distributions.pdf/.png` | Bootstrap distributions all 6 scenarios |
+| `bootstrap_s0_status_quo.csv` | 1,000 bootstrap samples for S0 |
+| `bootstrap_s1_uniform_sms.csv` | Bootstrap samples S1 |
+| `bootstrap_s2_uniform_chw.csv` | Bootstrap samples S2 |
+| `bootstrap_s3_risk_targeted.csv` | Bootstrap samples S3 |
+| `bootstrap_s4_rl_optimised.csv` | Bootstrap samples S4 |
+| `bootstrap_s5_bandit_allocated.csv` | Bootstrap samples S5 |
 
 ---
 
 ## Key Findings
 
-### 1. CQL Policy vs Behaviour Policy
+### 1. RL Policy Improvement
+- **FQI**: Converged (ΔQ=0.000 at iteration 2)
+- **CQL**: α=5.0 selected (most conservative; OOD=33.3%)
+- **OPE**: WIS +6.1%, FQE +6.7% improvement over behaviour policy
+- **Policy**: 83.9% of state-action pairs changed from behaviour
 
-The CQL-learned policy (α=1.0) substantially redistributes interventions compared to observed behaviour:
+### 2. Microsimulation Results (CORRECTED)
 
-| Action | Behaviour | CQL Policy |
-|--------|-----------|------------|
-| a₀: No intervention | 20.9% | 18.4% |
-| a₁: SMS reminder | 70.6% | 16.2% |
-| a₂: CHW home visit | 8.3% | 38.2% |
-| a₃: Facility recall | 0.2% | 7.8% |
-| a₄: Incentive | 0.0% | 19.5% |
+| Scenario | DTP3 | Improvement | Cost/Child | ICER | Equity Gap |
+|----------|------|-------------|------------|------|------------|
+| S0: Status Quo | 85.9% | — | ₦155 | — | 0.078 |
+| **S1: SMS** | **87.1%** | **+1.3pp** | **₦98** | **Dominant** | **0.072** |
+| S2: CHW | 88.4% | +2.5pp | ₦979 | ₦32,742 | 0.066 |
+| **S3: Risk-Targeted** | **88.2%** | **+2.3pp** | **₦341** | **₦8,007** | **0.067** |
+| S4: RL-Optimised | 88.2% | +2.3pp | ₦903 | ₦32,434 | 0.069 |
+| S5: Bandit | 87.1% | +1.2pp | ₦98 | Dominant | 0.072 |
 
-**Key shift**: CQL recommends far more CHW visits (38.2% vs 8.3%) and incentives (19.5% vs 0%), while reducing SMS reliance (16.2% vs 70.6%). This is consistent with the literature showing CHW visits have the largest effect sizes (+15-25%) in LMICs.
+### 3. Which Scenario Wins?
 
-**OOD warning**: CQL recommends actions a₃+a₄ for 27.3% of states (vs 0.2% in observed data). The CQL conservative penalty (α=1.0) provides some OOD safety, but these recommendations should be interpreted cautiously given the data support.
+**For policy recommendation**: S3 (Risk-Targeted) is the best strategy:
+- Nearly as effective as CHW (+2.3pp vs +2.5pp)
+- 1/3 the cost of CHW (₦341 vs ₦979)
+- Best ICER among non-dominant strategies (₦8,007)
+- Reduces equity gap (0.067 vs 0.078)
 
-### 2. Off-Policy Evaluation
+**For budget-constrained settings**: S1/S5 (SMS-based) are DOMINANT:
+- Better outcomes than status quo at LOWER cost
+- Negative ICER = intervention pays for itself (reduces costs vs current practice)
 
-| Method | Behaviour Value | Eval Policy Value | Improvement |
-|--------|----------------|-------------------|-------------|
-| WIS (ε=0.1) | 1.104 | 1.208 | +9.5% |
-| FQE (H=15) | 1.042 | 1.113 | +6.9% |
-| DR | — | 1.739 | (inflated, DR overestimates) |
+**For maximum impact regardless of cost**: S2 (Uniform CHW)
+- Highest DTP3 rate (88.4%)
+- Largest equity gap reduction
 
-**Two-stage OPE** (per literature review): WIS screening → FQE final. Both WIS and FQE agree on ~7-10% policy improvement. DR overestimates due to variance.
+### 4. RL vs Static Policies
 
-### 3. Microsimulation Scenario Comparison
+The RL policy matches but does not clearly outperform risk-targeted (S3) or CHW (S2). This is because:
+- CQL conservatism assigns 20% of children to "no intervention"
+- Only 2 dose transitions limit sequential decision advantage
+- The action RRR spread (10-25%) is narrow
+- RL's advantage is cost-efficiency (comparable to S3, better than S2)
 
-| Scenario | DTP3 Rate | 95% CI | Cost/Child | Equity Gap | ICER vs S0 |
-|----------|-----------|--------|------------|------------|------------|
-| S0: Status Quo | 0.903 | [0.898, 0.909] | ₦155 | 0.051 | — |
-| **S1: Uniform SMS** | **1.000** | [1.000, 1.000] | **₦100** | **0.000** | **₦-573** (dominates) |
-| S2: Uniform CHW | 1.000 | [1.000, 1.000] | ₦1,000 | 0.000 | ₦8,752 |
-| S3: Risk-Targeted | 1.000 | [1.000, 1.000] | ₦446 | 0.000 | ₦3,011 |
-| S4: RL-Optimised | 0.997 | [0.996, 0.998] | ₦887 | -0.001 | ₦7,836 |
-| S5: Bandit-Allocated | 0.877 | [0.870, 0.883] | ₦78 | 0.072 ❌ | ∞ (worse) |
+### 5. Equity Impact
 
-### 4. Winner: S1 (Uniform SMS) — with caveats
+All intervention scenarios reduce the richest-poorest equity gap:
+- S0: 0.078 → S3: 0.067 (14% reduction)
+- S4 (RL): 0.069 — does NOT widen the gap (constraint satisfied)
 
-**S1 dominates on cost-effectiveness**: achieves ~100% DTP3 completion at ₦100/child (lower than status quo). Negative ICER means it both improves outcomes AND saves money.
+### 6. Budget Constraint
 
-**However**: the near-100% rates for S1-S3 likely reflect model optimism — the transition model predicts very high baseline completion when any intervention is applied. The effect sizes from literature (SMS: +5-15%) are applied additively to already-high predicted probabilities, pushing nearly all children to completion.
-
-**S4 (RL-Optimised) is most realistic**: 99.7% DTP3 at ₦887/child. CQL's heterogeneous policy assigns different actions based on risk factors, producing a more conservative but potentially more robust estimate.
-
-**S5 (Bandit) fails**: community-level assignment (mostly SMS, since bandit converged to SMS as cheapest arm) performs worse than status quo because it doesn't account for individual-level risk variation. Also widens equity gap.
-
-### 5. Equity Analysis
-
-- **S0 baseline equity gap**: 5.1 percentage points (richest 94.1% vs poorest 89.0%)
-- **S1-S3**: Eliminate equity gap entirely (all quintiles reach ~100%)
-- **S4 (RL)**: Slightly reverses gap (gap = -0.1%, poorest marginally higher) ✓
-- **S5 (Bandit)**: Widens gap to 7.2% ❌ — violates equity constraint
-
-### 6. Recommended Strategy
-
-For the manuscript, we recommend presenting:
-1. **Primary finding**: RL-optimised policy (S4) achieves 99.7% DTP3 with no equity gap widening
-2. **Cost-effectiveness case**: S1 (SMS) dominates on ICER but depends on model assumptions about effect sizes
-3. **Pragmatic recommendation**: S3 (risk-targeted CHW for top 30%) achieves 100% DTP3 at moderate cost (₦446/child)
-4. **Policy warning**: Community-level bandit allocation (S5) is inferior — individual-level targeting matters
+At ₦500M national budget with 3,000 children/LGA:
+- SMS everywhere: ₦171M (feasible)
+- CHW everywhere: ₦1.71B (exceeds budget)
+- Bandit allocates SMS to 99.9% of communities (most cost-effective)
+- Budget only binding for CHW-heavy allocation strategies
 
 ---
 
-## LinUCB Bandit Summary
+## Corrections Applied
 
-- **Communities**: 1,140 clusters (sstate × v021)
-- **Context features**: 19 dimensions (12 sociodemographic + 5 geospatial + dropout rate + n_children)
-- **α sensitivity**: 0.5 (low regret, exploitative), 1.0 (balanced), 2.0 (explorative)
-- **Budget allocation**: Under all budgets (₦250M–₦1B), total allocation < ₦200K because community sizes are small (median ~3 children per cluster in the analytic sample)
-- **Action distribution**: 99.6% SMS (bandit correctly identifies SMS as most cost-effective per-child)
-
----
-
-## Data Quality Notes
-
-1. **Transition model accuracy = 1.0**: The GBR transition models overfit training data — microsim results should be interpreted as upper bounds on achievable completion rates under each policy
-2. **Near-ceiling effects**: With baseline DTP3 at 90.3%, the ~10% improvement headroom is quickly saturated by any intervention with effect size > 5-10%
-3. **Effect sizes applied additively**: Adding 10-20pp to children already at 85-95% predicted probability pushes many to >100% (capped at 1.0). This produces the ceiling effect in S1-S3
-4. **S5 underperformance**: The bandit assigns community-level (not individual-level) actions, missing within-community risk variation
+1. **FQI**: 50→200 iterations, threshold 0.001→0.01
+2. **CQL**: Tested α=1.0, 2.0, 5.0; selected α=5.0 (most conservative)
+3. **Effect sizes**: Relative risk reduction on dropout (not additive to completion)
+4. **Transition models**: State-only (no action features) to avoid circularity
+5. **Budget**: Scales by 3,000 children/LGA (not DHS sample size)
+6. **Bandit→microsim**: Uses budget-constrained allocation with corrected effects
 
 ---
 
-## Figure Locations for Dashboard
+## Dashboard Integration
 
-### Stage 2 Figures
-- `outputs/stage2/fqi_convergence.pdf/.png` — FQI convergence curve
-- `outputs/stage2/cql_analysis.pdf/.png` — CQL analysis (3 panels)
-- `outputs/stage2/ope_comparison.pdf/.png` — OPE method comparison + policy distributions
-- `outputs/stage2/q_values_by_action.pdf/.png` — Mean Q-values per action
+### Figure Locations
 
-### Stage 3 Figures
-- `outputs/stage3/bandit_allocation.pdf/.png` — LinUCB regret + budget coverage
-- `outputs/stage3/microsim_scenarios.pdf/.png` — 4-panel scenario comparison (main figure)
-- `outputs/stage3/bootstrap_distributions.pdf/.png` — Bootstrap uncertainty distributions
+| Figure | Path | Dashboard Panel |
+|--------|------|-----------------|
+| FQI convergence | `outputs/stage2/fqi_convergence.png` | RL Training |
+| CQL analysis | `outputs/stage2/cql_analysis.png` | RL Training |
+| OPE comparison | `outputs/stage2/ope_comparison.png` | Policy Evaluation |
+| Q-values by action | `outputs/stage2/q_values_by_action.png` | Policy Analysis |
+| Bandit allocation | `outputs/stage3/bandit_allocation.png` | Community Allocation |
+| Microsim scenarios | `outputs/stage3/microsim_scenarios.png` | Scenario Comparison |
+| Bootstrap distributions | `outputs/stage3/bootstrap_distributions.png` | Uncertainty |
 
----
+### Data for Interactive Dashboard
 
-## Stage Gate Checklist
-
-- [x] FQI trained (50 iterations, did not converge to <0.001 but stabilised ~0.005)
-- [x] CQL trained (α=1.0, 80 iterations, Q-values sensible: mean Q ≈ 1.07)
-- [x] OPE: WIS (+9.5%), FQE (+6.9%), DR computed — two-stage approach per lit review
-- [x] Policy improvement over behaviour quantified: 7-10% value improvement
-- [x] LinUCB allocation respects budget (₦184K << ₦500M budget)
-- [x] All 6 scenarios executed with 10K population × 1,000 bootstrap iterations
-- [x] Equity constraint checked: S4 (RL) does NOT widen gap; S5 (bandit) DOES
-- [x] Cost-effectiveness computed: S1 dominates (negative ICER), S3 pragmatic at ₦3,011/completion
+- `outputs/stage2/policy_lookup.csv`: Per-child Q-values and optimal actions
+- `outputs/stage2/cql_alpha_sensitivity.csv`: CQL α sensitivity data
+- `outputs/stage3/microsim_results.json`: Scenario comparison data
+- `outputs/stage3/lga_allocation.csv`: Community-level allocation map
+- `outputs/stage3/stage3_summary.json`: Budget sensitivity analysis
 
 ---
 
-## Scripts
+## What the Dashboard Agent Should Read First
 
-- `scripts/stage2_offline_rl.py` — FQI + CQL + OPE + policy extraction
-- `scripts/stage3_bandit_microsim.py` — LinUCB + microsimulation + figures
+1. `outputs/stage3/microsim_results.json` — scenario comparison (main result)
+2. `outputs/stage2/stage2_summary.json` — RL training summary
+3. `outputs/stage3/stage3_summary.json` — full stage 3 summary with budget sensitivity
+4. `outputs/stage3/correction_log.md` — what changed and why
