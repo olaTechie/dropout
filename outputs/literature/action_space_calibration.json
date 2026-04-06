@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "date": "2026-04-06",
+    "source": "Literature review — systematic searches of PubMed, Google Scholar, medRxiv",
+    "notes": "Effect sizes updated from CLAUDE.md defaults based on published evidence. Ranges reflect heterogeneity across study settings."
+  },
+  "actions": {
+    "a0": {
+      "label": "No intervention",
+      "cost_naira": 0,
+      "effect_size_range": [0.0, 0.0],
+      "effect_size_central": 0.0,
+      "effect_measure": "absolute percentage point increase in completion",
+      "evidence_source": "Reference category",
+      "evidence_quality": "N/A",
+      "notes": "Baseline — no additional intervention beyond routine system"
+    },
+    "a1": {
+      "label": "SMS reminder",
+      "cost_naira": 50,
+      "effect_size_range": [0.05, 0.15],
+      "effect_size_central": 0.10,
+      "effect_measure": "absolute percentage point increase in completion",
+      "relative_risk": 1.16,
+      "relative_risk_ci": [1.10, 1.21],
+      "relative_risk_low_income": 1.39,
+      "relative_risk_low_income_ci": [1.19, 1.62],
+      "evidence_source": "Eze et al. 2021 meta-analysis (18 LMICs, 32712 infants); Mekonnen et al. 2021 Ethiopia RCT",
+      "evidence_quality": "High — systematic review + meta-analysis of 13 RCTs",
+      "notes": "CLAUDE.md default was +5-10%. Updated UPPER bound to 15% based on low-income subgroup RR=1.39. Effect stronger in low-income settings. More than 2 reminders significantly improves timeliness (p=0.040)."
+    },
+    "a2": {
+      "label": "CHW home visit",
+      "cost_naira": 500,
+      "effect_size_range": [0.15, 0.25],
+      "effect_size_central": 0.20,
+      "effect_measure": "absolute percentage point increase in completion",
+      "relative_risk": null,
+      "or_access_enhancement": 3.31,
+      "or_access_enhancement_ci": [2.18, 5.04],
+      "evidence_source": "Brugha et al. 2008 Ghana trial (+25pp); Meta-analysis of vaccination strategies 2025 (OR 3.31 for access enhancement); Multiple African RCTs",
+      "evidence_quality": "Moderate-High — multiple RCTs but heterogeneous designs",
+      "notes": "CLAUDE.md default was +15-25%. CONFIRMED by literature. Ghana trial showed 60%→85% coverage. Access enhancement (which includes CHW visits) shows strongest effects in lower-HDI countries (Cohen's d=0.66)."
+    },
+    "a3": {
+      "label": "Facility recall + defaulter tracing",
+      "cost_naira": 1500,
+      "effect_size_range": [0.20, 0.30],
+      "effect_size_central": 0.25,
+      "effect_measure": "absolute percentage point increase in completion",
+      "hazard_ratio": 1.50,
+      "or_reminder_recall": 1.48,
+      "or_reminder_recall_ci": [1.28, 1.72],
+      "evidence_source": "Indonesia cluster-RCT (HR 1.50 for DTPcv3); Cochrane review reminder-recall (OR 1.48); WHO defaulter tracing guidance",
+      "evidence_quality": "Moderate — fewer RCTs specific to defaulter tracing; evidence mainly from reminder-recall systems",
+      "notes": "CLAUDE.md default was +20-30%. CONFIRMED. Multi-component approaches (recall + outreach workers) have greater impact than single-component. Indonesia trial: 50% more likely to complete within 60 days."
+    },
+    "a4": {
+      "label": "Conditional incentive",
+      "cost_naira": 800,
+      "effect_size_range": [0.09, 0.22],
+      "effect_size_central": 0.14,
+      "effect_measure": "absolute percentage point increase in completion",
+      "or_incentives": 1.34,
+      "or_incentives_ci": [1.08, 1.67],
+      "evidence_source": "New Incentives Nigeria RCT (+9-18pp); Banerjee et al. 2010 India (+22pp); Pakistan mCCT trial 2022; Meta-analysis 2025 (OR 1.34)",
+      "evidence_quality": "High — multiple RCTs including Nigeria-specific evidence (New Incentives)",
+      "notes": "CLAUDE.md default was +10-20%. Updated LOWER bound to 9% and UPPER to 22% based on New Incentives Nigeria RCT (9-18pp) and Banerjee India trial (22pp). Nigeria-specific evidence is strongest. Cost-effectiveness: $1500-6000 per death averted."
+    }
+  },
+  "reward_function": {
+    "completion_reward": 1.0,
+    "next_dose_reward": 0.3,
+    "cost_penalty_lambda": 0.001,
+    "notes": "No changes recommended to CLAUDE.md defaults. Lambda=0.001 is consistent with published cost-effectiveness thresholds in LMIC vaccination programs."
+  },
+  "changes_from_defaults": {
+    "a1_upper_bound": "Increased from 10% to 15% (low-income RR=1.39)",
+    "a4_range": "Changed from 10-20% to 9-22% (New Incentives Nigeria RCT 9-18pp; Banerjee India 22pp)",
+    "a2_and_a3": "Confirmed — no changes needed"
+  }
+}

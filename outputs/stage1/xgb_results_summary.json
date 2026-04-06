@@ -1,0 +1,230 @@
+{
+  "t1": {
+    "model_name": "Model T1",
+    "n": 3194,
+    "prevalence": 0.040075140889167186,
+    "best_params": {
+      "max_depth": 8,
+      "learning_rate": 0.011304859349612393,
+      "n_estimators": 427,
+      "min_child_weight": 2,
+      "subsample": 0.8341355578943225,
+      "colsample_bytree": 0.7607649330679636,
+      "gamma": 2.7709694921765036,
+      "reg_alpha": 5.577707102291449e-05,
+      "reg_lambda": 6.262064148464717e-05,
+      "scale_pos_weight": 4.904299716905334
+    },
+    "metrics": {
+      "auc_roc": 0.9100544421873025,
+      "auc_roc_ci": [
+        0.885245901597048,
+        0.9317870199756381
+      ],
+      "auc_pr": 0.2992835149631423,
+      "auc_pr_ci": [
+        0.22967038692246408,
+        0.3867407676008945
+      ],
+      "brier": {
+        "brier": 0.03580247402207748,
+        "reliability": 0.0031000835229373375,
+        "resolution": 0.006920558356999172,
+        "uncertainty": 0.039845787068578734
+      },
+      "calibration": {
+        "intercept": -0.661273505927093,
+        "slope": 0.8735888182458796
+      },
+      "fold_aucs": [
+        0.9151398361419202,
+        0.9194638267630935,
+        0.8848711806113236,
+        0.9353876373202002,
+        0.9015866563730827
+      ]
+    },
+    "delong": {
+      "auc_xgb": 0.9089331580234833,
+      "auc_lr": 0.8175783798108285,
+      "diff": 0.09135477821265481,
+      "z": 6.14284182936103,
+      "p": 8.105799039025438e-10
+    },
+    "features": [
+      "mage",
+      "male",
+      "bord",
+      "parity",
+      "medu",
+      "fedu",
+      "v505",
+      "v131",
+      "v743a",
+      "v467b",
+      "v159",
+      "v158",
+      "v157",
+      "media2",
+      "s1112s",
+      "s1112p",
+      "wealth",
+      "v714",
+      "v481",
+      "v136",
+      "v151",
+      "v137",
+      "rural",
+      "szone",
+      "v483a",
+      "com_poverty",
+      "com_illit",
+      "com_uemp",
+      "com_media",
+      "com_diversity",
+      "com_zses",
+      "UN_Population_Density_2020",
+      "Travel_Times",
+      "Nightlights_Composite",
+      "Malaria_Prevalence_2020",
+      "ITN_Coverage_2020",
+      "h1a",
+      "antenat",
+      "facility_del",
+      "h34",
+      "m70",
+      "m74",
+      "v393",
+      "h69",
+      "contact_count",
+      "h11",
+      "h22",
+      "community_dropout",
+      "cluster_dtp_coverage"
+    ],
+    "andersen_domains": {
+      "Predisposing": 0.7883411645889282,
+      "Enabling": 0.8970798254013062,
+      "Need": 1.2368431091308594,
+      "Dynamic": 1.6346893310546875
+    }
+  },
+  "t2": {
+    "model_name": "Model T2",
+    "n": 3023,
+    "prevalence": 0.039364869335097585,
+    "best_params": {
+      "max_depth": 4,
+      "learning_rate": 0.015469367932655019,
+      "n_estimators": 167,
+      "min_child_weight": 1,
+      "subsample": 0.7445117174353565,
+      "colsample_bytree": 0.626681238621836,
+      "gamma": 0.28258387159036846,
+      "reg_alpha": 1.724217370969667e-06,
+      "reg_lambda": 0.058725548310099844,
+      "scale_pos_weight": 1.3905095496358038
+    },
+    "metrics": {
+      "auc_roc": 0.9431931734510237,
+      "auc_roc_ci": [
+        0.928977876894313,
+        0.9572805168119299
+      ],
+      "auc_pr": 0.5481630323573449,
+      "auc_pr_ci": [
+        0.4539706407102539,
+        0.6404413297903836
+      ],
+      "brier": {
+        "brier": 0.027352878783906322,
+        "reliability": 0.001143838124986785,
+        "resolution": 0.013557385313309953,
+        "uncertainty": 0.04027191452439719
+      },
+      "calibration": {
+        "intercept": 0.7244852966743882,
+        "slope": 1.5955172047783825
+      },
+      "fold_aucs": [
+        0.9239417848921869,
+        0.9378937352684947,
+        0.9343882977914583,
+        0.9521841669479482,
+        0.9685867005256228
+      ]
+    },
+    "delong": {
+      "auc_xgb": 0.949455401995509,
+      "auc_lr": 0.8633643540060653,
+      "diff": 0.08609104798944378,
+      "z": 6.1135150852449875,
+      "p": 9.746015340814168e-10
+    },
+    "features": [
+      "mage",
+      "male",
+      "bord",
+      "parity",
+      "medu",
+      "fedu",
+      "v505",
+      "v131",
+      "v743a",
+      "v467b",
+      "v159",
+      "v158",
+      "v157",
+      "media2",
+      "s1112s",
+      "s1112p",
+      "wealth",
+      "v714",
+      "v481",
+      "v136",
+      "v151",
+      "v137",
+      "rural",
+      "szone",
+      "v483a",
+      "com_poverty",
+      "com_illit",
+      "com_uemp",
+      "com_media",
+      "com_diversity",
+      "com_zses",
+      "UN_Population_Density_2020",
+      "Travel_Times",
+      "Nightlights_Composite",
+      "Malaria_Prevalence_2020",
+      "ITN_Coverage_2020",
+      "h1a",
+      "antenat",
+      "facility_del",
+      "h34",
+      "m70",
+      "m74",
+      "v393",
+      "h69",
+      "contact_count",
+      "h11",
+      "h22",
+      "community_dropout",
+      "cluster_dtp_coverage"
+    ],
+    "andersen_domains": {
+      "Predisposing": 0.2120520919561386,
+      "Enabling": 0.23477567732334137,
+      "Need": 0.41386866569519043,
+      "Dynamic": 1.2403521537780762
+    }
+  },
+  "full": {
+    "andersen_domains": {
+      "Predisposing": 0.8987787910737097,
+      "Enabling": 0.7983290853444487,
+      "Need": 0.8199370037764311,
+      "Dynamic": 2.738986052572727
+    }
+  }
+}

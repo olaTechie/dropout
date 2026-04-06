@@ -1,0 +1,144 @@
+{
+  "n_communities": 1140,
+  "n_context_features": 19,
+  "linucb_alpha": 1.0,
+  "budget_primary": 500000000,
+  "microsim_n_pop": 10000,
+  "microsim_n_bootstrap": 1000,
+  "scenarios": {
+    "S0: Status Quo": {
+      "scenario": "S0: Status Quo",
+      "dtp3_rate_mean": 0.9034889,
+      "dtp3_rate_ci_low": 0.8976,
+      "dtp3_rate_ci_high": 0.9087025,
+      "dtp2_rate_mean": 0.9475649,
+      "cost_per_child_mean": 155.29699500000004,
+      "cost_total_mean": 1552969.95,
+      "equity_gap_mean": 0.050812991714424355,
+      "equity_gap_ci_low": 0.03336132646938142,
+      "equity_gap_ci_high": 0.06765387538029025,
+      "rate_poorest_mean": 0.8903593816160622,
+      "rate_richest_mean": 0.9411723733304866
+    },
+    "S1: Uniform SMS": {
+      "scenario": "S1: Uniform SMS",
+      "dtp3_rate_mean": 0.9999844,
+      "dtp3_rate_ci_low": 0.9999,
+      "dtp3_rate_ci_high": 1.0,
+      "dtp2_rate_mean": 1.0,
+      "cost_per_child_mean": 100.0,
+      "cost_total_mean": 1000000.0,
+      "equity_gap_mean": 4.13750528823128e-05,
+      "equity_gap_ci_low": 0.0,
+      "equity_gap_ci_high": 0.0006131207847945852,
+      "rate_poorest_mean": 0.9999586249471176,
+      "rate_richest_mean": 1.0,
+      "icer_vs_s0": -573.0525775813386,
+      "delta_dtp3_vs_s0": 0.09649549999999996,
+      "delta_cost_vs_s0": -55.29699500000004
+    },
+    "S2: Uniform CHW": {
+      "scenario": "S2: Uniform CHW",
+      "dtp3_rate_mean": 1.0,
+      "dtp3_rate_ci_low": 1.0,
+      "dtp3_rate_ci_high": 1.0,
+      "dtp2_rate_mean": 1.0,
+      "cost_per_child_mean": 1000.0,
+      "cost_total_mean": 10000000.0,
+      "equity_gap_mean": 0.0,
+      "equity_gap_ci_low": 0.0,
+      "equity_gap_ci_high": 0.0,
+      "rate_poorest_mean": 1.0,
+      "rate_richest_mean": 1.0,
+      "icer_vs_s0": 8752.392263687807,
+      "delta_dtp3_vs_s0": 0.09651109999999996,
+      "delta_cost_vs_s0": 844.703005
+    },
+    "S3: Risk-Targeted": {
+      "scenario": "S3: Risk-Targeted",
+      "dtp3_rate_mean": 1.0,
+      "dtp3_rate_ci_low": 1.0,
+      "dtp3_rate_ci_high": 1.0,
+      "dtp2_rate_mean": 1.0,
+      "cost_per_child_mean": 445.909465,
+      "cost_total_mean": 4459094.65,
+      "equity_gap_mean": 0.0,
+      "equity_gap_ci_low": 0.0,
+      "equity_gap_ci_high": 0.0,
+      "rate_poorest_mean": 1.0,
+      "rate_richest_mean": 1.0,
+      "icer_vs_s0": 3011.1818226090068,
+      "delta_dtp3_vs_s0": 0.09651109999999996,
+      "delta_cost_vs_s0": 290.61247
+    },
+    "S4: RL-Optimised": {
+      "scenario": "S4: RL-Optimised",
+      "dtp3_rate_mean": 0.9969004,
+      "dtp3_rate_ci_low": 0.9957,
+      "dtp3_rate_ci_high": 0.9979,
+      "dtp2_rate_mean": 0.9974001,
+      "cost_per_child_mean": 887.268265,
+      "cost_total_mean": 8872682.65,
+      "equity_gap_mean": -0.0009830831623863442,
+      "equity_gap_ci_low": -0.003709698353786711,
+      "equity_gap_ci_high": 0.0016838632230758638,
+      "rate_poorest_mean": 0.9987739487743761,
+      "rate_richest_mean": 0.9977908656119898,
+      "icer_vs_s0": 7835.986682581911,
+      "delta_dtp3_vs_s0": 0.09341149999999998,
+      "delta_cost_vs_s0": 731.97127
+    },
+    "S5: Bandit-Allocated": {
+      "scenario": "S5: Bandit-Allocated",
+      "dtp3_rate_mean": 0.8766401,
+      "dtp3_rate_ci_low": 0.8702975,
+      "dtp3_rate_ci_high": 0.8827050000000001,
+      "dtp2_rate_mean": 0.8980235000000001,
+      "cost_per_child_mean": 78.02896000000001,
+      "cost_total_mean": 780289.6,
+      "equity_gap_mean": 0.07239013750359408,
+      "equity_gap_ci_low": 0.05403305115176586,
+      "equity_gap_ci_high": 0.09235699719043113,
+      "rate_poorest_mean": 0.8541156878154997,
+      "rate_richest_mean": 0.9265058253190939,
+      "icer_vs_s0": Infinity,
+      "delta_dtp3_vs_s0": -0.026848800000000006,
+      "delta_cost_vs_s0": -77.26803500000003
+    }
+  },
+  "budget_sensitivity": {
+    "low": {
+      "budget": 250000000,
+      "total_cost": "184550",
+      "communities_covered": 1140,
+      "action_dist": {
+        "1": "1136",
+        "2": "2",
+        "3": "1",
+        "4": "1"
+      }
+    },
+    "medium": {
+      "budget": 500000000,
+      "total_cost": "184550",
+      "communities_covered": 1140,
+      "action_dist": {
+        "1": "1136",
+        "2": "2",
+        "3": "1",
+        "4": "1"
+      }
+    },
+    "high": {
+      "budget": 1000000000,
+      "total_cost": "184550",
+      "communities_covered": 1140,
+      "action_dist": {
+        "1": "1136",
+        "2": "2",
+        "3": "1",
+        "4": "1"
+      }
+    }
+  }
+}

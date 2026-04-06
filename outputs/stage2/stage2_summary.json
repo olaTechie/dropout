@@ -1,0 +1,42 @@
+{
+  "fqi_converged": false,
+  "fqi_final_delta": null,
+  "cql_alpha": 1.0,
+  "cql_iterations": 80,
+  "policy_action_dist": {
+    "0": 0.184,
+    "1": 0.162,
+    "2": 0.382,
+    "3": 0.078,
+    "4": 0.195
+  },
+  "behaviour_action_dist": {
+    "0": 0.209,
+    "1": 0.706,
+    "2": 0.083,
+    "3": 0.002,
+    "4": 0.0
+  },
+  "ope": {
+    "behaviour_policy_value": 1.103671669960022,
+    "IS_estimate": 0.1978924888105528,
+    "WIS_estimate": 1.2081854325035657,
+    "FQE_behaviour_value": 1.0417868085873565,
+    "FQE_eval_policy_value": 1.1132685023176696,
+    "DR_estimate": 1.7386768146527394,
+    "policy_improvement_WIS": 0.10451376254354372,
+    "policy_improvement_FQE": 0.0714816937303131,
+    "policy_improvement_pct_WIS": 9.469642592831029,
+    "policy_improvement_pct_FQE": 6.861451224098425,
+    "ood_action_freq_cql_pct": 27.263953675406142,
+    "ood_action_freq_behav_pct": 0.16084928422068523,
+    "cql_alpha": 1.0,
+    "cql_final_penalty": -0.01705738382567509,
+    "n_validation_episodes": 1569,
+    "wis_epsilon": 0.1
+  },
+  "policy_changes_pct": 85.1,
+  "n_train": 3123,
+  "n_val": 3094,
+  "n_episodes_val": 1569
+}
