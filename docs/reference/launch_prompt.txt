@@ -1,0 +1,24 @@
+Create an agent team for the Nigeria vaccine dropout RL pipeline.
+Sequential execution — each agent completes before the next starts.
+
+Spawn teammates in this order:
+1. "literature-reviewer" using the literature-reviewer agent type
+   — must complete and write handoffs/lit_to_eda.md before agent 2 starts
+2. "eda-cascade-ml" using the eda-cascade-ml agent type
+   — must complete and write handoffs/eda_to_rl.md before agent 3 starts
+3. "rl-bandit-microsim" using the rl-bandit-microsim agent type
+   — must complete and write handoffs/rl_to_dashboard.md before agent 4 starts
+4. "dashboard-integration" using the dashboard-integration agent type
+
+Use task dependencies (blockedBy) to enforce this sequence.
+Require plan approval for agents 2 and 3 before they make changes.
+All agents use Opus.
+
+Before dispatching each agent, verify:
+- Previous agent's handoff file exists
+- Previous agent's stage gate checklist is complete
+- Update docs/pipeline_audit_log.md with stage completion status
+
+Data files are at:
+- data/raw/dhs/nga_2024/NGKR8BFL.DTA
+- data/raw/geospatial/NGGC8AFL.csv
