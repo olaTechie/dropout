@@ -67,3 +67,23 @@ class TestSlopeIndex:
         y = (w == 5).astype(float)  # Only richest completes
         sii = slope_index_of_inequality(y, w)
         assert sii > 0
+
+
+class TestWeightedVariants:
+    def test_wealth_gap_with_uniform_weights_matches_unweighted(self, rng):
+        n = 200
+        y = rng.binomial(1, 0.5, n).astype(float)
+        w = rng.integers(1, 6, n)
+        weights = np.ones(n)
+        assert abs(wealth_gap(y, w) - wealth_gap(y, w, weights=weights)) < 1e-9
+
+    def test_concentration_index_with_uniform_weights_matches_unweighted(self, rng):
+        n = 200
+        y = rng.binomial(1, 0.4, n).astype(float)
+        w = rng.integers(1, 6, n)
+        weights = np.ones(n)
+        assert abs(concentration_index(y, w) - concentration_index(y, w, weights=weights)) < 1e-9
+
+    def test_length_mismatch_raises(self):
+        with pytest.raises(ValueError):
+            wealth_gap(np.array([0, 1]), np.array([1, 2, 3]))
