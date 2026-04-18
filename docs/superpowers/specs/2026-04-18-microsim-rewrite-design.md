@@ -164,6 +164,9 @@ Shared RL infrastructure:
 - Next dose LATE (>42 days) → a₀
 - Next dose NOT received → a₀
 
+**Reward function (unchanged from CLAUDE.md):**
+R(s, a, s') = +1.0 if DTP3 completed + 0.3 if next dose received − λ × cost(a), λ = 0.001, γ = 0.95.
+
 ### 4.6 `rl/cql.py`, `rl/iql.py`, `rl/bcq.py`
 
 All implement the same protocol:
@@ -298,7 +301,7 @@ Select the algorithm with the highest FQE policy value, subject to OOD frequency
 | S2 | Uniform CHW (a₂) |
 | S3 | Risk-targeted (top 30% dropout risk → a₂, rest → a₁) |
 | S4 | RL-optimised (selected algorithm policy) |
-| S5 | Bandit-allocated (LinUCB community-level with budget constraint) |
+| S5 | Bandit-allocated (LinUCB community-level with budget constraint; 3-action space) |
 
 ### 6.2 Sensitivity (5-action)
 
