@@ -77,3 +77,9 @@ class TestBuildMDPDataset:
         df.loc[0, "action"] = 4  # a4 not in 3-action space
         dataset = build_mdp_dataset(df, n_actions=3)
         assert dataset["actions"].max() < 3
+
+    def test_missing_columns_raises(self):
+        import pandas as pd
+        bad_df = pd.DataFrame({"action": [0, 1], "reward": [0.0, 0.3]})
+        with pytest.raises(ValueError, match="Missing columns"):
+            build_mdp_dataset(bad_df, n_actions=3)

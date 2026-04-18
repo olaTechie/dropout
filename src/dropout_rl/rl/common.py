@@ -12,9 +12,10 @@ from typing import Literal
 import numpy as np
 import pandas as pd
 
-from dropout_rl.config import ACTIONS_PRIMARY, N_ACTIONS_PRIMARY
 
-
+# 42 days = 6 weeks; corresponds to the standard DTP inter-dose interval
+# (28 days / 4 weeks between consecutive doses per NPHCDA schedule) plus a
+# 14-day "on-schedule" tolerance per CLAUDE.md behaviour-policy inference rules.
 ON_TIME_THRESHOLD_DAYS = 42
 
 
@@ -80,6 +81,11 @@ def build_mdp_dataset(
     -------
     dict with keys: states, actions, rewards, weights, n_actions.
     """
+    required = {"state", "action", "reward", "weight"}
+    missing = required - set(traj_df.columns)
+    if missing:
+        raise ValueError(f"Missing columns: {sorted(missing)}")
+
     actions = traj_df["action"].to_numpy().astype(np.int64)
     actions = np.clip(actions, 0, n_actions - 1)
 
