@@ -12,6 +12,7 @@ from dropout_rl.config import (
     ACTION_COSTS_POINT,
     N_BOOTSTRAP_DEFAULT,
     N_POP_DEFAULT,
+    RRR_RANGES,
 )
 from dropout_rl.costs import sample_cost_batch
 from dropout_rl.equity import (
@@ -91,6 +92,7 @@ def run_scenario(
     psa: bool = True,
     seed: int = 42,
     is_status_quo: bool = False,
+    n_actions: int = 3,
     feature_cols: list[str] | None = None,
 ) -> ScenarioResult:
     """Run a microsimulation scenario with cluster-bootstrap and optional PSA.
@@ -111,6 +113,9 @@ def run_scenario(
         If True, draw RRR and costs from priors each iteration.
     is_status_quo : bool
         If True, do not apply RRR (baseline dropout rates used directly).
+    n_actions : int
+        Size of the action space (default 3: a0, a1, a2). Set to 5 for the
+        full action set (a0-a4).
     feature_cols : list[str] | None
         Columns to feed to transition models. If None, use t1_model.feature_names.
 
@@ -119,7 +124,6 @@ def run_scenario(
     ScenarioResult
     """
     rng = np.random.default_rng(seed)
-    n_actions = 3  # primary action space
 
     if feature_cols is None:
         feature_cols = list(getattr(t1_model, "feature_names", analytic_df.columns))
@@ -159,8 +163,11 @@ def run_scenario(
             rrr_draws = sample_rrr_batch(n_actions, rng)
             cost_draws = sample_cost_batch(n_actions, rng)
         else:
-            rrr_draws = np.array([0.0, 0.10, 0.20])
-            cost_draws = np.array([0.0, 50.0, 500.0])
+            # Non-PSA fallback: use point estimates from config
+            rrr_draws = np.array([RRR_RANGES[a][0] for a in range(n_actions)])
+            cost_draws = np.array(
+                [float(ACTION_COSTS_POINT[a]) for a in range(n_actions)]
+            )
 
         # T1 transition
         p_dropout_t1 = t1_model.predict_dropout(X)
@@ -188,27 +195,49 @@ def run_scenario(
         results["total_cost"][b] = total_cost_per_step
         results["cost_per_child"][b] = total_cost_per_step / n_pop
 
-        # Equity
+        # Equity (with DHS survey weights v005/1e6 per CLAUDE.md)
         if "wealth" in sample.columns:
             wealth = sample["wealth"].to_numpy()
             y = received_dtp3.astype(float)
-            results["concentration_index"][b] = concentration_index(y, wealth)
-            results["wealth_gap"][b] = wealth_gap(y, wealth)
-            results["slope_index"][b] = slope_index_of_inequality(y, wealth)
+            wts = (
+                (sample["v005"].to_numpy() / 1e6)
+                if "v005" in sample.columns
+                else None
+            )
+            results["concentration_index"][b] = concentration_index(
+                y, wealth, weights=wts
+            )
+            results["wealth_gap"][b] = wealth_gap(y, wealth, weights=wts)
+            results["slope_index"][b] = slope_index_of_inequality(
+                y, wealth, weights=wts
+            )
             for q in range(1, 6):
                 mask = wealth == q
-                results["rate_by_quintile"][b, q - 1] = (
+                if mask.any():
+                    if wts is not None:
+                        w_sub = wts[mask]
+                        results["rate_by_quintile"][b, q - 1] = (
+                            (y[mask] * w_sub).sum() / w_sub.sum()
+                        )
+                    else:
+                        results["rate_by_quintile"][b, q - 1] = y[mask].mean()
+                else:
+                    results["rate_by_quintile"][b, q - 1] = np.nan
+        if "szone" in sample.columns:
+            szone = sample["szone"].to_numpy()
+            y = received_dtp3.astype(float)
+            # szone values are typically 1-6; map to 0-5
+            unique_zones = sorted(
+                set(int(z) for z in np.unique(szone) if not np.isnan(float(z)))
+            )
+            for i, z in enumerate(unique_zones[:6]):
+                mask = szone == z
+                results["rate_by_zone"][b, i] = (
                     y[mask].mean() if mask.any() else np.nan
                 )
-        if "sstate" in sample.columns:
-            # Aggregate by zone (Nigeria 6 zones, approximate: bucket into 6)
-            zones = np.digitize(sample["sstate"].to_numpy(),
-                                [7, 14, 21, 28, 32, 40]) - 1
-            zones = np.clip(zones, 0, 5)
-            y = received_dtp3.astype(float)
-            for z in range(6):
-                mask = zones == z
-                results["rate_by_zone"][b, z] = y[mask].mean() if mask.any() else np.nan
+        elif "sstate" in sample.columns:
+            # Fallback: skip zonal analysis with NaN rather than fabricate buckets
+            results["rate_by_zone"][b, :] = np.nan
 
     return ScenarioResult(
         name=name,
