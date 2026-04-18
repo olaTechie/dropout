@@ -1,7 +1,6 @@
 """Tests for dropout_rl.transitions."""
 
 import numpy as np
-import pytest
 
 from dropout_rl.transitions import TransitionModel, load_t1, load_t2
 
@@ -17,11 +16,9 @@ class TestTransitionModel:
         assert np.all(probs >= 0.0)
         assert np.all(probs <= 1.0)
 
-    def test_calibration_slope_near_one(self, real_analytic_data):
-        """Recalibrated T1 slope should be within [0.9, 1.1]."""
-        from dropout_rl.transitions import load_t1
+    def test_predict_is_not_constant(self):
+        """Predictions should have non-zero variance across different inputs."""
         model = load_t1()
-        # Sanity: predictions are not constant
         n_features = model.xgb_model.num_features()
         X = np.random.default_rng(0).standard_normal((100, n_features)).astype(np.float32)
         probs = model.predict_dropout(X)

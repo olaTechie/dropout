@@ -53,9 +53,9 @@ class TransitionModel:
             np.asarray(X, dtype=np.float32),
             feature_names=feature_names,
         )
-        raw_completion = self.xgb_model.predict(dmat)
+        raw_dropout = self.xgb_model.predict(dmat)
         # XGBoost models predict P(dropout) directly (trained on dropout label)
-        calibrated = self.calibrator.transform(raw_completion)
+        calibrated = self.calibrator.transform(raw_dropout)
         return np.clip(calibrated, 0.0, 1.0)
 
 
