@@ -1,0 +1,27 @@
+{
+  "state": {
+    "n_strata": 37,
+    "n_flagged": 26,
+    "max_error": 0.18897246402625067
+  },
+  "zone": {
+    "n_strata": 6,
+    "n_flagged": 5,
+    "max_error": 0.0839171800857037
+  },
+  "maternal_education": {
+    "n_strata": 4,
+    "n_flagged": 3,
+    "max_error": 0.06815842274165751
+  },
+  "wealth_quintile": {
+    "n_strata": 5,
+    "n_flagged": 5,
+    "max_error": 0.067090983019372
+  },
+  "urban_rural": {
+    "n_strata": 2,
+    "n_flagged": 2,
+    "max_error": 0.06739612559665031
+  }
+}
