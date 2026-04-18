@@ -66,6 +66,7 @@ def infer_behaviour_policy_3action(df: pd.DataFrame) -> np.ndarray:
 def build_mdp_dataset(
     traj_df: pd.DataFrame,
     n_actions: Literal[3, 5] = 3,
+    feature_names: list[str] | None = None,
 ) -> dict:
     """Build MDP dataset dict from trajectory dataframe.
 
@@ -76,6 +77,10 @@ def build_mdp_dataset(
     n_actions : int
         Target action space size. Actions ≥ n_actions are clipped to n_actions-1
         (i.e., a3/a4 → a2 when narrowing to 3 actions).
+    feature_names : list[str] | None
+        If provided, extract only these features from each JSON state (in order).
+        This allows alignment with downstream models (e.g. TransitionModel). If None,
+        uses all state keys in JSON order (default legacy behaviour).
 
     Returns
     -------
@@ -90,15 +95,24 @@ def build_mdp_dataset(
     actions = np.clip(actions, 0, n_actions - 1)
 
     # Parse state JSON
-    states_list = []
-    for s in traj_df["state"]:
-        parsed = json.loads(s)
-        states_list.append(list(parsed.values()))
-    # Build uniform array — pad if necessary
-    max_len = max(len(s) for s in states_list)
-    states = np.zeros((len(states_list), max_len), dtype=np.float32)
-    for i, s in enumerate(states_list):
-        states[i, : len(s)] = s
+    if feature_names is not None:
+        # Extract only requested features; missing keys get 0.0
+        states = np.zeros((len(traj_df), len(feature_names)), dtype=np.float32)
+        for i, s in enumerate(traj_df["state"]):
+            parsed = json.loads(s)
+            for j, name in enumerate(feature_names):
+                v = parsed.get(name, 0.0)
+                states[i, j] = v if v is not None else 0.0
+    else:
+        states_list = []
+        for s in traj_df["state"]:
+            parsed = json.loads(s)
+            states_list.append(list(parsed.values()))
+        # Build uniform array — pad if necessary
+        max_len = max(len(s) for s in states_list)
+        states = np.zeros((len(states_list), max_len), dtype=np.float32)
+        for i, s in enumerate(states_list):
+            states[i, : len(s)] = s
 
     return {
         "states": states,

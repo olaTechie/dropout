@@ -22,6 +22,7 @@ from dropout_rl.rl.common import build_mdp_dataset
 from dropout_rl.rl.cql import CQL
 from dropout_rl.rl.iql import IQL
 from dropout_rl.rl.ope import fqe_value, ood_frequency, wis_value
+from dropout_rl.transitions import load_t1
 
 warnings.filterwarnings("ignore")
 STAGE2_V2_DIR.mkdir(parents=True, exist_ok=True)
@@ -34,7 +35,9 @@ print("=" * 60)
 traj_df = pd.read_csv(PROCESSED_DIR / "trajectory_dataset.csv")
 print(f"Trajectory: {len(traj_df)} rows")
 
-dataset = build_mdp_dataset(traj_df, n_actions=3)
+_t1_for_features = load_t1()
+dataset = build_mdp_dataset(traj_df, n_actions=3, feature_names=_t1_for_features.feature_names)
+print(f"Feature alignment: using {len(_t1_for_features.feature_names)} features from TransitionModel T1")
 print(f"MDP dataset: states {dataset['states'].shape}, actions in {set(dataset['actions'])}")
 
 behav_action_dist = np.bincount(dataset["actions"], minlength=3) / len(dataset["actions"])
