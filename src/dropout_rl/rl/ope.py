@@ -42,7 +42,12 @@ def wis_value(
     n = len(actions)
 
     pred_actions = target_policy(states)
-    target_probs = np.full((n, dataset["n_actions"]), epsilon / (dataset["n_actions"] - 1))
+    n_actions = dataset["n_actions"]
+    if n_actions == 1:
+        # Degenerate single-action space: target prob is 1 everywhere
+        target_probs = np.ones((n, 1))
+    else:
+        target_probs = np.full((n, n_actions), epsilon / (n_actions - 1))
     for i, a in enumerate(pred_actions):
         target_probs[i, a] = 1.0 - epsilon
 
@@ -51,7 +56,9 @@ def wis_value(
 
     weights = target_taken / behav_taken
     if weights.sum() == 0:
-        return 0.0
+        import warnings
+        warnings.warn("WIS: all importance weights are zero; estimate undefined.", RuntimeWarning)
+        return float("nan")
     return float((weights * rewards).sum() / weights.sum())
 
 
@@ -66,12 +73,17 @@ def fqe_value(
     Trains Q̂(s, a) via regression on Bellman targets under the target policy,
     then returns E[Q̂(s_0, π(s_0))] averaged over initial states in the dataset.
 
+    For cross-sectional datasets (DHS), gamma must be 0.0. For multi-step MDPs,
+    pass `next_states` in the dataset dict.
+
     Parameters
     ----------
     target_policy : callable
     dataset : dict
+        Must contain states, actions, rewards, n_actions. If gamma > 0, must also
+        contain next_states.
     gamma : float
-        Discount factor.
+        Discount factor. Must be 0.0 unless `next_states` is provided in dataset.
     n_iterations : int
         Fitted Q iteration count.
 
@@ -79,7 +91,20 @@ def fqe_value(
     -------
     float
         Estimated policy value.
+
+    Raises
+    ------
+    NotImplementedError
+        If gamma > 0 but `next_states` is not in the dataset dict.
     """
+    if gamma > 0 and "next_states" not in dataset:
+        raise NotImplementedError(
+            "FQE with gamma > 0 requires 'next_states' in dataset. "
+            "Current cross-sectional DHS data does not support multi-step discounting; "
+            "use gamma=0.0 for immediate-reward evaluation. "
+            "See Raghu et al. 2022 for healthcare-OPE recommendations."
+        )
+
     states = dataset["states"]
     actions = dataset["actions"]
     rewards = dataset["rewards"]
@@ -88,7 +113,6 @@ def fqe_value(
 
     # One regressor per action
     q_models: list[ExtraTreesRegressor | None] = [None] * n_actions
-    q_current = np.zeros(n)
 
     for it in range(n_iterations):
         # Bellman target using target policy at next state (treated as same state for simplicity)
@@ -115,10 +139,24 @@ def fqe_value(
     # Final value: E[Q(s, π(s))]
     pi_actions = target_policy(states)
     q_final = np.zeros(n)
+    missing_action_mass = 0
     for a in range(n_actions):
         mask = pi_actions == a
-        if mask.any() and q_models[a] is not None:
-            q_final[mask] = q_models[a].predict(states[mask])
+        if not mask.any():
+            continue
+        if q_models[a] is None:
+            # Action rarely/never observed — flag support problem
+            missing_action_mass += mask.sum()
+            continue
+        q_final[mask] = q_models[a].predict(states[mask])
+
+    if missing_action_mass > 0:
+        import warnings
+        warnings.warn(
+            f"FQE: target policy assigns {missing_action_mass}/{n} ({100*missing_action_mass/n:.1f}%) "
+            f"probability to actions with no training support. Estimated value biased downward.",
+            RuntimeWarning,
+        )
     return float(q_final.mean())
 
 

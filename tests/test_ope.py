@@ -92,3 +92,13 @@ class TestOODFrequency:
         target = np.ones(100, dtype=np.int64)
         freq = ood_frequency(target, behav, min_behaviour_prob=0.01)
         assert freq == 1.0
+
+
+class TestFQEGammaGuard:
+    def test_raises_for_positive_gamma_without_next_states(self, rng):
+        from dropout_rl.rl.ope import fqe_value
+        dataset = _toy_dataset(rng)
+        def policy(s):
+            return np.ones(len(s), dtype=np.int64)
+        with pytest.raises(NotImplementedError, match="gamma"):
+            fqe_value(target_policy=policy, dataset=dataset, gamma=0.95)
