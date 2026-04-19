@@ -1,25 +1,65 @@
-name: Deploy Website
+name: Deploy Website to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths: ['website/**']
+    paths:
+      - 'website/**'
+      - '.github/workflows/website-deploy.yml'
+  workflow_dispatch:
 
+# Required to deploy to GitHub Pages via the official actions
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time; new pushes cancel in-flight deploys
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
+    name: Build site
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: cd website && npm ci
-      - run: cd website && npm run build
-      - uses: peaceiris/actions-gh-pages@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./website/dist
-          publish_branch: gh-pages
-          destination_dir: dropout
+          node-version: 20
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        # legacy-peer-deps=true lives in website/.npmrc, so npm ci honours it
+        # while still enforcing the lockfile install plan
+        run: npm ci
+        working-directory: website
+
+      - name: Build
+        run: npm run build
+        working-directory: website
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
