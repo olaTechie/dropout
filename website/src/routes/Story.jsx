@@ -7,6 +7,8 @@ import Effects from '../scene/effects/Effects.jsx';
 import ActI_Family from '../scene/acts/ActI_Family.jsx';
 import ActII_Corridor from '../scene/acts/ActII_Corridor.jsx';
 import ActIII_Nation from '../scene/acts/ActIII_Nation.jsx';
+import ActIV_Interventions from '../scene/acts/ActIV_Interventions.jsx';
+import InterventionPanel from '../components/hud/InterventionPanel.jsx';
 import { useStoryStore } from '../state/story.js';
 
 export default function Story() {
@@ -21,9 +23,12 @@ export default function Story() {
         {currentAct === 1 && <ActI_Family progress={progress} />}
         {currentAct === 2 && <ActII_Corridor progress={progress} />}
         {currentAct === 3 && <ActIII_Nation progress={progress} />}
+        {currentAct === 4 && <ActIV_Interventions progress={progress} />}
         <CinematicRig act={currentAct} />
         <Effects />
       </StageCanvas>
+
+      {currentAct === 4 && <InterventionPanel />}
 
       <div className="relative z-10">
         <Scrollama onStepEnter={({ data }) => setAct(data)} onStepProgress={({ progress: p }) => setProgress(p)}>
@@ -55,6 +60,16 @@ export default function Story() {
                 <h2 className="font-serif text-5xl md:text-7xl leading-tight">A nation of corridors.</h2>
                 <p className="mt-8 text-muted">
                   Across 774 LGAs, millions of cohorts move through the same 6-10-14 week gates.
+                </p>
+              </div>
+            </section>
+          </Step>
+          <Step data={4}>
+            <section className="min-h-[200vh] flex items-center justify-center px-6">
+              <div className="max-w-xl text-center">
+                <h2 className="font-serif text-5xl md:text-7xl leading-tight">What if we acted?</h2>
+                <p className="mt-8 text-muted">
+                  Toggle interventions on the left. SMS, CHW, recall, incentive — each has a cost and a reach.
                 </p>
               </div>
             </section>
