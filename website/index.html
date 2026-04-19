@@ -7,6 +7,20 @@
     <meta name="description" content="Reducing DTP vaccination dropout in Nigeria — an interactive story and policy explorer from the University of Warwick." />
     <title>Catching the Fall — DTP Dropout in Nigeria</title>
     <script defer data-domain="olatechie.github.io" src="https://plausible.io/js/script.js"></script>
+    <script>
+      // GitHub Pages SPA restore — pairs with public/404.html.
+      // If we arrived via the 404 redirect, the real path is encoded in the query.
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function (s) {
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
   </head>
   <body class="bg-[#05070C] text-[#F4F0E6]">
     <div id="root"></div>

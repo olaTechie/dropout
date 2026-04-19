@@ -16,12 +16,14 @@ import DashboardOverlay from '../components/hud/DashboardOverlay.jsx';
 import { useStoryStore } from '../state/story.js';
 
 export default function Story() {
-  if (!hasWebGL()) {
-    return <Navigate to="/story/transcript" replace />;
-  }
+  // All hooks before any conditional return — React Rules of Hooks
   const [progress, setProgress] = useState(0);
   const currentAct = useStoryStore((s) => s.currentAct);
   const setAct = useStoryStore((s) => s.setAct);
+
+  if (!hasWebGL()) {
+    return <Navigate to="/story/transcript" replace />;
+  }
 
   return (
     <>

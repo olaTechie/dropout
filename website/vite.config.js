@@ -7,6 +7,10 @@ export default defineConfig({
   base: '/dropout/',
   build: {
     target: 'es2022',
+    // three.js core is ~720 kB raw (~180 kB gzipped) and cannot be
+    // tree-shaken further without abandoning the @react-three stack;
+    // raise the warn threshold accordingly so the build log stays signal.
+    chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
         manualChunks(id) {
