@@ -6,6 +6,7 @@ import LightRig from '../scene/lighting/LightRig.jsx';
 import Effects from '../scene/effects/Effects.jsx';
 import ActI_Family from '../scene/acts/ActI_Family.jsx';
 import ActII_Corridor from '../scene/acts/ActII_Corridor.jsx';
+import ActIII_Nation from '../scene/acts/ActIII_Nation.jsx';
 import { useStoryStore } from '../state/story.js';
 
 export default function Story() {
@@ -19,6 +20,7 @@ export default function Story() {
         <LightRig act={currentAct} />
         {currentAct === 1 && <ActI_Family progress={progress} />}
         {currentAct === 2 && <ActII_Corridor progress={progress} />}
+        {currentAct === 3 && <ActIII_Nation progress={progress} />}
         <CinematicRig act={currentAct} />
         <Effects />
       </StageCanvas>
@@ -43,6 +45,16 @@ export default function Story() {
                 <h2 className="font-serif text-5xl md:text-7xl leading-tight">The corridor.</h2>
                 <p className="mt-8 text-muted">
                   By their first birthday, 15 of every 100 never made it.
+                </p>
+              </div>
+            </section>
+          </Step>
+          <Step data={3}>
+            <section className="min-h-[200vh] flex items-center justify-center px-6">
+              <div className="max-w-xl text-center">
+                <h2 className="font-serif text-5xl md:text-7xl leading-tight">A nation of corridors.</h2>
+                <p className="mt-8 text-muted">
+                  Across 774 LGAs, millions of cohorts move through the same 6-10-14 week gates.
                 </p>
               </div>
             </section>
