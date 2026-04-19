@@ -60,16 +60,14 @@ def build_fig2() -> None:
     ]
     for ax, p, title in pairs:
         if p.suffix == ".pdf":
-            try:
-                from pdf2image import convert_from_path
-                img = convert_from_path(p, dpi=300)[0]
-                ax.imshow(img)
-            except ImportError:
-                ax.text(0.5, 0.5, "(install pdf2image)", ha="center", va="center",
-                        transform=ax.transAxes)
-                ax.axis("off")
-                ax.set_title(title, loc="left", fontsize=12, fontweight="bold")
-                continue
+            import fitz  # PyMuPDF
+            doc = fitz.open(str(p))
+            page = doc.load_page(0)
+            pix = page.get_pixmap(dpi=300)
+            import numpy as np
+            img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+            doc.close()
+            ax.imshow(img)
         else:
             ax.imshow(mpimg.imread(p))
         ax.set_title(title, loc="left", fontsize=12, fontweight="bold")
