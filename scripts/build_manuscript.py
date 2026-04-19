@@ -37,6 +37,7 @@ SECTION_ORDER = [
     "02_results.md",
     "03_discussion.md",
     "04_conclusions.md",
+    "98_figures_tables.md",
     "99_backmatter.md",
 ]
 
