@@ -375,7 +375,8 @@ Detection on boot via WebGL context probe.
 
 ## 11. Deployment
 
-- **GitHub Pages** static hosting; custom domain decision pending from PI [PLEASE VERIFY: domain choice — proposal: `dropout.warwick.ac.uk` or `dropout.vacseries.org`]. Until decided, deploys to `<username>.github.io/dropout/`.
+- **GitHub Pages** static hosting at `olatechie.github.io/dropout/`. No custom domain.
+- Vite `base: '/dropout/'` configured; all asset and router paths use this base.
 - **CI (GitHub Actions):** test → Lighthouse CI (budgets enforced) → axe-core → build → deploy to `gh-pages`.
 - **Pre-deploy gates:** all budgets met; all a11y tests pass; data JSON schema-valid; 3D assets under 2MB each.
 
