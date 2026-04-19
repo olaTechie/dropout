@@ -53,7 +53,7 @@
 - **T1 calibration intercept post-recalibration = −0.065** ← `outputs/stage1/xgb_results_summary.json`, key `t1.metrics.calibration.intercept` (−0.06504470952432687)
 - **T1 DeLong test: XGBoost AUROC 0.909 vs Logistic Regression AUROC 0.818; difference 0.091; z = 6.14; p = 8.1×10⁻¹⁰** ← `outputs/stage1/xgb_results_summary.json`, keys `t1.delong.auc_xgb`, `t1.delong.auc_lr`, `t1.delong.diff`, `t1.delong.z`, `t1.delong.p`
 - **T1 Andersen domain contributions — Dynamic: 1.635; Need: 1.237; Enabling: 0.897; Predisposing: 0.788** ← `outputs/stage1/xgb_results_summary.json`, key `t1.andersen_domains`
-- **T1 top-3 SHAP predictors** ← [PLEASE VERIFY: inspect `outputs/stage1/shap_bar_model_t1.pdf` to identify the three features with highest mean absolute SHAP value in the T1 bar chart. Feature list available at `t1.features` in `xgb_results_summary.json`.]
+- **T1 top-3 SHAP predictors: h69 (recorded vaccination status), Travel_Times (geospatial travel time to facility), Nightlights_Composite (satellite-derived development/infrastructure proxy)** ← extracted from `outputs/stage1/shap_bar_model_t1.pdf` via PyMuPDF text extraction; labels ordered top-to-bottom on the y-axis of a `shap.plots.bar()` chart, i.e. descending mean |SHAP|.
 - **T2 N = 3,023** ← `outputs/stage1/xgb_results_summary.json`, key `t2.n`
 - **T2 prevalence = 0.0394 (3.9%)** ← `outputs/stage1/xgb_results_summary.json`, key `t2.prevalence` (raw value: 0.039364869335097585)
 - **T2 AUROC = 0.943 (95% CI 0.929–0.957)** ← `outputs/stage1/xgb_results_summary.json`, keys `t2.metrics.auc_roc` (0.9431931734510237), `t2.metrics.auc_roc_ci` ([0.928977876894313, 0.9572805168119299])
@@ -66,7 +66,7 @@
 - **T2 calibration intercept post-recalibration = −0.104** ← `outputs/stage1/xgb_results_summary.json`, key `t2.metrics.calibration.intercept` (−0.10411803819230027)
 - **T2 DeLong test: XGBoost AUROC 0.949 vs Logistic Regression AUROC 0.863; difference 0.086; z = 6.11; p = 9.7×10⁻¹⁰** ← `outputs/stage1/xgb_results_summary.json`, keys `t2.delong.*`
 - **T2 Andersen domain contributions — Dynamic: 1.240; Need: 0.414; Enabling: 0.235; Predisposing: 0.212** ← `outputs/stage1/xgb_results_summary.json`, key `t2.andersen_domains`
-- **T2 top-3 SHAP predictors** ← [PLEASE VERIFY: inspect `outputs/stage1/shap_bar_model_t2.pdf` to identify the three features with highest mean absolute SHAP value in the T2 bar chart. Feature list available at `t2.features` in `xgb_results_summary.json`.]
+- **T2 top-3 SHAP predictors: com_zses (community zonal SES composite), h22 (recent febrile illness — care-seeking proxy), v137 (number of children under 5 in household)** ← extracted from `outputs/stage1/shap_bar_model_t2.pdf` via PyMuPDF text extraction; same convention.
 - **Recalibration method: isotonic regression (sklearn); date 2026-04-06** ← `outputs/stage1/recalibration_log.md`
 - **Trajectory dataset: 6,217 rows, 3,138 unique children** ← `outputs/stage1/recalibration_log.md`, section "Trajectory Dataset"
 
