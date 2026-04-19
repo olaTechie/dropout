@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-abyss: #05070C;
+  --color-night: #0D1220;
+  --color-dusk: #1A2340;
+  --color-moonlight: #F4F0E6;
+  --color-muted: #9AA3B8;
+  --color-saffron: #F5B042;
+  --color-terracotta: #C6553A;
+  --color-iris: #5A7BFF;
+  --color-verdigris: #47B7A0;
+  --color-ochre: #A66A2C;
+  --font-serif: "Fraunces", serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html, body, #root { height: 100%; }
+body { font-family: var(--font-sans); }

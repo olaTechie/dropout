@@ -1,0 +1,47 @@
+{
+  "name": "dropout-website",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint .",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@react-three/postprocessing": "^2.16.0",
+    "d3": "^7.9.0",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.475.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.0",
+    "react-scrollama": "^2.4.2",
+    "react-simple-maps": "^3.0.0",
+    "recharts": "^3.8.1",
+    "three": "^0.183.2",
+    "topojson-client": "^3.1.0",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "gh-pages": "^6.3.0",
+    "jsdom": "^26.0.0",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.1",
+    "vitest": "^3.0.0"
+  }
+}
