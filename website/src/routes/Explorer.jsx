@@ -32,7 +32,14 @@ export default function Explorer() {
         </p>
       </header>
       <TabNav active={active} onChange={setActive} />
-      <Active />
+      <section
+        role="tabpanel"
+        id={`tabpanel-${active}`}
+        aria-labelledby={`tab-${active}`}
+        tabIndex={0}
+      >
+        <Active />
+      </section>
     </main>
   );
 }

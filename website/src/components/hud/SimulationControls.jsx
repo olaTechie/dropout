@@ -1,8 +1,23 @@
+import { useState } from 'react';
 import { useScenarioStore } from '../../state/scenario.js';
 import BudgetSlider from './BudgetSlider.jsx';
 
 export default function SimulationControls({ cameraMode, setCameraMode, scale, setScale }) {
   const { interventions, toggleIntervention, rule, setRule } = useScenarioStore();
+  const [copyStatus, setCopyStatus] = useState(null); // 'copied' | 'failed' | null
+
+  const handleCopy = async () => {
+    try {
+      const { encodeToURL } = useScenarioStore.getState();
+      const url = `${window.location.origin}${window.location.pathname}?${encodeToURL()}`;
+      await navigator.clipboard.writeText(url);
+      setCopyStatus('copied');
+    } catch {
+      setCopyStatus('failed');
+    } finally {
+      setTimeout(() => setCopyStatus(null), 2200);
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-80 z-20 bg-abyss/80 backdrop-blur-lg border-r border-white/10 p-6 overflow-y-auto">
@@ -10,12 +25,24 @@ export default function SimulationControls({ cameraMode, setCameraMode, scale, s
 
       <fieldset className="mb-6">
         <legend className="text-xs uppercase tracking-wider text-muted mb-2">Camera</legend>
-        <div className="flex gap-2">
-          {['orbit', 'flythrough', 'top'].map((m) => (
-            <button key={m} onClick={() => setCameraMode(m)} className={`px-3 py-1 text-xs rounded-full border ${cameraMode === m ? 'border-saffron text-saffron' : 'border-white/10 text-muted'}`}>
-              {m}
-            </button>
-          ))}
+        <div role="radiogroup" aria-label="Camera mode" className="flex gap-2">
+          {['orbit', 'flythrough', 'top'].map((m) => {
+            const active = cameraMode === m;
+            return (
+              <button
+                key={m}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => setCameraMode(m)}
+                className={`px-3 py-1 text-xs rounded-full border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron/60 ${
+                  active ? 'border-saffron text-saffron' : 'border-white/10 text-muted hover:text-moonlight'
+                }`}
+              >
+                {m}
+              </button>
+            );
+          })}
         </div>
       </fieldset>
 
@@ -55,15 +82,20 @@ export default function SimulationControls({ cameraMode, setCameraMode, scale, s
       <div className="mb-6"><BudgetSlider /></div>
 
       <button
-        onClick={() => {
-          const { encodeToURL } = useScenarioStore.getState();
-          const url = `${window.location.origin}${window.location.pathname}?${encodeToURL()}`;
-          navigator.clipboard.writeText(url);
-        }}
-        className="w-full py-2 border border-white/10 rounded-xl text-sm hover:border-saffron/40"
+        type="button"
+        onClick={handleCopy}
+        className="w-full py-2 border border-white/10 rounded-xl text-sm hover:border-saffron/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron/60"
       >
         Copy snapshot URL
       </button>
+      <p
+        role="status"
+        aria-live="polite"
+        className={`mt-2 text-xs text-center transition-opacity ${copyStatus ? 'opacity-100' : 'opacity-0'}`}
+      >
+        {copyStatus === 'copied' && 'URL copied to clipboard'}
+        {copyStatus === 'failed' && 'Copy failed — clipboard unavailable'}
+      </p>
     </aside>
   );
 }
