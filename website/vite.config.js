@@ -9,15 +9,19 @@ export default defineConfig({
     target: 'es2022',
     rollupOptions: {
       output: {
-        manualChunks: {
-          'three-core': ['three'],
-          'three-react': [
-            '@react-three/fiber',
-            '@react-three/drei',
-            '@react-three/postprocessing',
-          ],
-          'charts': ['d3', 'recharts'],
-          'motion': ['framer-motion'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('/three/')) return 'three-core';
+          if (
+            id.includes('@react-three/fiber') ||
+            id.includes('@react-three/drei') ||
+            id.includes('@react-three/postprocessing')
+          ) {
+            return 'three-react';
+          }
+          if (id.includes('/d3') || id.includes('/recharts')) return 'charts';
+          if (id.includes('framer-motion')) return 'motion';
+          return undefined;
         },
       },
     },
