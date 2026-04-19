@@ -25,22 +25,29 @@ export default function SimulationControls({ cameraMode, setCameraMode, scale, s
 
       <fieldset className="mb-6">
         <legend className="text-xs uppercase tracking-wider text-muted mb-2">Camera</legend>
-        <div role="radiogroup" aria-label="Camera mode" className="flex gap-2">
+        {/* Native radio inputs deliver the full WAI-ARIA radio interaction model
+            (single tab stop, arrow-key navigation, screen-reader announcement)
+            for free; we just style the labels to match the rest of the HUD. */}
+        <div className="flex gap-2">
           {['orbit', 'flythrough', 'top'].map((m) => {
             const active = cameraMode === m;
             return (
-              <button
+              <label
                 key={m}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() => setCameraMode(m)}
-                className={`px-3 py-1 text-xs rounded-full border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron/60 ${
+                className={`px-3 py-1 text-xs rounded-full border cursor-pointer transition focus-within:ring-2 focus-within:ring-saffron/60 ${
                   active ? 'border-saffron text-saffron' : 'border-white/10 text-muted hover:text-moonlight'
                 }`}
               >
+                <input
+                  type="radio"
+                  name="camera-mode"
+                  value={m}
+                  checked={active}
+                  onChange={() => setCameraMode(m)}
+                  className="sr-only"
+                />
                 {m}
-              </button>
+              </label>
             );
           })}
         </div>

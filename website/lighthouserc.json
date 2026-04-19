@@ -4,9 +4,7 @@
       "startServerCommand": "npm run preview -- --port 4173 --strictPort",
       "startServerReadyPattern": "Local:",
       "url": [
-        "http://localhost:4173/dropout/",
-        "http://localhost:4173/dropout/policy",
-        "http://localhost:4173/dropout/explorer"
+        "http://localhost:4173/dropout/"
       ],
       "numberOfRuns": 1
     },

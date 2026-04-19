@@ -3,14 +3,26 @@ import { Link } from 'react-router-dom';
 import { useScenarioStore } from '../../state/scenario.js';
 import { formatNaira, formatPct } from '../../lib/format.js';
 import { useEffect, useState } from 'react';
-import { loadData } from '../../lib/dataLoader.js';
+import { loadData, loadFallbackScenario } from '../../lib/dataLoader.js';
 import { buildCubeIndex, interpolateScenario } from '../../lib/interp.js';
 
 export default function DashboardOverlay({ visible = true }) {
   const [cube, setCube] = useState(null);
+  const [fallback, setFallback] = useState(null);
   const { budget, rule, sms_rrr, chw_rrr } = useScenarioStore();
-  useEffect(() => { loadData('scenario_cube').then((r) => setCube(buildCubeIndex(r))); }, []);
-  const live = cube ? interpolateScenario(cube, { budget, rule, sms_rrr, chw_rrr }) : null;
+  useEffect(() => {
+    let cancelled = false;
+    loadData('scenario_cube')
+      .then((r) => { if (!cancelled) setCube(buildCubeIndex(r)); })
+      .catch(async () => {
+        const fb = await loadFallbackScenario(rule);
+        if (!cancelled && fb) setFallback(fb);
+      });
+    return () => { cancelled = true; };
+  }, [rule]);
+  const live = cube
+    ? interpolateScenario(cube, { budget, rule, sms_rrr, chw_rrr })
+    : fallback;
 
   const cards = [
     { label: 'Recommended', value: 'Risk-targeted CHW', sub: 'Top 30% risk → CHW, rest → SMS' },

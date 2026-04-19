@@ -2,25 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/dropout/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Reducing DTP vaccination dropout in Nigeria — an interactive story and policy explorer from the University of Warwick." />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://plausible.io; connect-src 'self' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'" />
     <title>Catching the Fall — DTP Dropout in Nigeria</title>
     <script defer data-domain="olatechie.github.io" src="https://plausible.io/js/script.js"></script>
-    <script>
-      // GitHub Pages SPA restore — pairs with public/404.html.
-      // If we arrived via the 404 redirect, the real path is encoded in the query.
-      (function (l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function (s) {
-            return s.replace(/~and~/g, '&');
-          }).join('?');
-          window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        }
-      })(window.location);
-    </script>
   </head>
   <body class="bg-[#05070C] text-[#F4F0E6]">
     <div id="root"></div>
