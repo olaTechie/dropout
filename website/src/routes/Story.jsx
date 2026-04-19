@@ -13,6 +13,7 @@ import ActIV_Interventions from '../scene/acts/ActIV_Interventions.jsx';
 import ActV_Dashboard from '../scene/acts/ActV_Dashboard.jsx';
 import InterventionPanel from '../components/hud/InterventionPanel.jsx';
 import DashboardOverlay from '../components/hud/DashboardOverlay.jsx';
+import CanvasErrorBoundary from '../components/shared/CanvasErrorBoundary.jsx';
 import { useStoryStore } from '../state/story.js';
 
 export default function Story() {
@@ -27,16 +28,18 @@ export default function Story() {
 
   return (
     <>
-      <StageCanvas>
-        <LightRig act={currentAct} />
-        {currentAct === 1 && <ActI_Family progress={progress} />}
-        {currentAct === 2 && <ActII_Corridor progress={progress} />}
-        {currentAct === 3 && <ActIII_Nation progress={progress} />}
-        {currentAct === 4 && <ActIV_Interventions progress={progress} />}
-        {currentAct === 5 && <ActV_Dashboard />}
-        <CinematicRig act={currentAct} />
-        <Effects />
-      </StageCanvas>
+      <CanvasErrorBoundary>
+        <StageCanvas>
+          <LightRig act={currentAct} />
+          {currentAct === 1 && <ActI_Family progress={progress} />}
+          {currentAct === 2 && <ActII_Corridor progress={progress} />}
+          {currentAct === 3 && <ActIII_Nation progress={progress} />}
+          {currentAct === 4 && <ActIV_Interventions progress={progress} />}
+          {currentAct === 5 && <ActV_Dashboard />}
+          <CinematicRig act={currentAct} />
+          <Effects />
+        </StageCanvas>
+      </CanvasErrorBoundary>
 
       {currentAct === 4 && <InterventionPanel />}
       {currentAct === 5 && <DashboardOverlay visible />}

@@ -6,6 +6,7 @@ import LightRig from '../scene/lighting/LightRig.jsx';
 import OrbitRig from '../scene/camera/OrbitRig.jsx';
 import ActIV_Interventions from '../scene/acts/ActIV_Interventions.jsx';
 import SimulationControls from '../components/hud/SimulationControls.jsx';
+import CanvasErrorBoundary from '../components/shared/CanvasErrorBoundary.jsx';
 import { useScenarioStore } from '../state/scenario.js';
 
 export default function Simulation() {
@@ -29,11 +30,13 @@ export default function Simulation() {
 
   return (
     <>
-      <StageCanvas className="fixed inset-0 -z-0" shadows={false}>
-        <LightRig act={4} />
-        <ActIV_Interventions progress={0.5} />
-        <OrbitRig enabled={cameraMode === 'orbit'} />
-      </StageCanvas>
+      <CanvasErrorBoundary>
+        <StageCanvas className="fixed inset-0 -z-0" shadows={false}>
+          <LightRig act={4} />
+          <ActIV_Interventions progress={0.5} />
+          <OrbitRig enabled={cameraMode === 'orbit'} />
+        </StageCanvas>
+      </CanvasErrorBoundary>
       <SimulationControls cameraMode={cameraMode} setCameraMode={setCameraMode} scale={scale} setScale={setScale} />
     </>
   );

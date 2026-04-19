@@ -1,17 +1,20 @@
 import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Environment, ContactShadows } from '@react-three/drei';
+import { ContactShadows } from '@react-three/drei';
 import Mother from '../props/Mother.jsx';
 import Child from '../props/Child.jsx';
 import Home from '../props/Home.jsx';
 
+// We deliberately do NOT use drei's <Environment preset="..."> here —
+// drei fetches the HDRI from an external CDN (market.pmnd.rs), which the
+// strict CSP in index.html blocks. Lighting comes from <LightRig />
+// (added by Story.jsx); without an Environment we lose image-based
+// reflections on PBR materials but keep the scene fully self-hosted.
 export default function ActI_Family({ progress = 0 }) {
   const glowRef = useRef(0);
   glowRef.current = progress > 0.5 ? (progress - 0.5) * 2 : 0;
 
   return (
     <>
-      <Environment preset="sunset" />
       <fog attach="fog" args={['#0D1220', 5, 25]} />
 
       <Home position={[-3, 0, -2]} />
