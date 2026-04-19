@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Scrollama, Step } from 'react-scrollama';
-import { hasWebGL } from '../lib/webgl.js';
+import { hasWebGL, hasWebGL2 } from '../lib/webgl.js';
 import StageCanvas from '../scene/StageCanvas.jsx';
 import CinematicRig from '../scene/camera/CinematicRig.jsx';
 import LightRig from '../scene/lighting/LightRig.jsx';
@@ -21,6 +21,9 @@ export default function Story() {
   const [progress, setProgress] = useState(0);
   const currentAct = useStoryStore((s) => s.currentAct);
   const setAct = useStoryStore((s) => s.setAct);
+  // Postprocessing (Bloom/DoF/Vignette) requires WebGL2; on WebGL1 the
+  // EffectComposer throws and would tear down the whole canvas.
+  const fxEnabled = hasWebGL2();
 
   if (!hasWebGL()) {
     return <Navigate to="/story/transcript" replace />;
@@ -37,7 +40,7 @@ export default function Story() {
           {currentAct === 4 && <ActIV_Interventions progress={progress} />}
           {currentAct === 5 && <ActV_Dashboard />}
           <CinematicRig act={currentAct} />
-          <Effects />
+          <Effects enabled={fxEnabled} />
         </StageCanvas>
       </CanvasErrorBoundary>
 
