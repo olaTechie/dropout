@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Scrollama, Step } from 'react-scrollama';
+import { hasWebGL } from '../lib/webgl.js';
 import StageCanvas from '../scene/StageCanvas.jsx';
 import CinematicRig from '../scene/camera/CinematicRig.jsx';
 import LightRig from '../scene/lighting/LightRig.jsx';
@@ -14,6 +16,9 @@ import DashboardOverlay from '../components/hud/DashboardOverlay.jsx';
 import { useStoryStore } from '../state/story.js';
 
 export default function Story() {
+  if (!hasWebGL()) {
+    return <Navigate to="/story/transcript" replace />;
+  }
   const [progress, setProgress] = useState(0);
   const currentAct = useStoryStore((s) => s.currentAct);
   const setAct = useStoryStore((s) => s.setAct);
