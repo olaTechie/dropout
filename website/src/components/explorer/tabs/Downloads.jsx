@@ -1,8 +1,10 @@
+import { withBase } from '../../../lib/paths.js';
+
 const FILES = [
-  { name: 'Scenarios (CSV)', href: '/dropout/data/scenarios.json', kind: 'JSON' },
-  { name: 'Cascade (CSV)', href: '/dropout/data/cascade.json', kind: 'JSON' },
-  { name: 'Scenario cube (JSON)', href: '/dropout/data/scenario_cube.json', kind: 'JSON' },
-  { name: 'Validation report', href: '/dropout/data/validation.json', kind: 'JSON' },
+  { name: 'Scenario catalogue', href: withBase('data/scenarios.json'), kind: 'JSON' },
+  { name: 'Cascade summary', href: withBase('data/cascade.json'), kind: 'JSON' },
+  { name: 'Scenario cube', href: withBase('data/scenario_cube.json'), kind: 'JSON' },
+  { name: 'Validation report', href: withBase('data/validation.json'), kind: 'JSON' },
   { name: 'Source code (GitHub)', href: 'https://github.com/olatechie/dropout', kind: 'Code' },
 ];
 

@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Scrollama, Step } from 'react-scrollama';
-import { hasWebGL, hasWebGL2 } from '../lib/webgl.js';
+import { hasWebGL } from '../lib/webgl.js';
 import StageCanvas from '../scene/StageCanvas.jsx';
-import CinematicRig from '../scene/camera/CinematicRig.jsx';
-import LightRig from '../scene/lighting/LightRig.jsx';
-import Effects from '../scene/effects/Effects.jsx';
-import ActI_Family from '../scene/acts/ActI_Family.jsx';
-import ActII_Corridor from '../scene/acts/ActII_Corridor.jsx';
-import ActIII_Nation from '../scene/acts/ActIII_Nation.jsx';
-import ActIV_Interventions from '../scene/acts/ActIV_Interventions.jsx';
-import ActV_Dashboard from '../scene/acts/ActV_Dashboard.jsx';
+import StableStoryScene from '../scene/StableStoryScene.jsx';
 import InterventionPanel from '../components/hud/InterventionPanel.jsx';
 import DashboardOverlay from '../components/hud/DashboardOverlay.jsx';
 import CanvasErrorBoundary from '../components/shared/CanvasErrorBoundary.jsx';
@@ -21,9 +14,6 @@ export default function Story() {
   const [progress, setProgress] = useState(0);
   const currentAct = useStoryStore((s) => s.currentAct);
   const setAct = useStoryStore((s) => s.setAct);
-  // Postprocessing (Bloom/DoF/Vignette) requires WebGL2; on WebGL1 the
-  // EffectComposer throws and would tear down the whole canvas.
-  const fxEnabled = hasWebGL2();
 
   if (!hasWebGL()) {
     return <Navigate to="/story/transcript" replace />;
@@ -33,14 +23,7 @@ export default function Story() {
     <>
       <CanvasErrorBoundary>
         <StageCanvas>
-          <LightRig act={currentAct} />
-          {currentAct === 1 && <ActI_Family progress={progress} />}
-          {currentAct === 2 && <ActII_Corridor progress={progress} />}
-          {currentAct === 3 && <ActIII_Nation progress={progress} />}
-          {currentAct === 4 && <ActIV_Interventions progress={progress} />}
-          {currentAct === 5 && <ActV_Dashboard />}
-          <CinematicRig act={currentAct} />
-          <Effects enabled={fxEnabled} />
+          <StableStoryScene act={currentAct} progress={progress} />
         </StageCanvas>
       </CanvasErrorBoundary>
 

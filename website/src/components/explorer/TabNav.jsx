@@ -33,7 +33,7 @@ export default function TabNav({ active, onChange }) {
     <div
       role="tablist"
       aria-label="Explorer sections"
-      className="border-b border-white/5 mb-8 overflow-x-auto flex gap-6 min-w-max"
+      className="mb-8 flex min-w-max gap-3 overflow-x-auto rounded-full border border-white/10 bg-white/5 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.14)]"
       onKeyDown={onKeyDown}
     >
       {TABS.map((t) => {
@@ -49,8 +49,10 @@ export default function TabNav({ active, onChange }) {
             aria-controls={`tabpanel-${t.id}`}
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(t.id)}
-            className={`py-3 text-sm border-b-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron/60 ${
-              selected ? 'border-saffron text-moonlight' : 'border-transparent text-muted hover:text-moonlight'
+            className={`rounded-full px-4 py-3 text-sm whitespace-nowrap transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-saffron/60 ${
+              selected
+                ? 'bg-saffron text-abyss font-semibold shadow-[0_8px_24px_rgba(245,176,66,0.22)]'
+                : 'text-muted hover:bg-white/7 hover:text-moonlight'
             }`}
           >
             {t.label}

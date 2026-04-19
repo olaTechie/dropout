@@ -1,9 +1,10 @@
-const BASE = import.meta.env.BASE_URL || '/';
+import { withBase } from './paths.js';
+
 const cache = new Map();
 
 export async function loadData(name) {
   if (cache.has(name)) return cache.get(name);
-  const url = `${BASE}data/${name}.json`.replace(/\/+/g, '/');
+  const url = withBase(`data/${name}.json`);
   const promise = fetch(url).then((r) => {
     if (!r.ok) throw new Error(`Failed to load ${name}: ${r.status}`);
     return r.json();

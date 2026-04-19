@@ -27,7 +27,7 @@ export default class CanvasErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="fixed inset-0 -z-0 flex flex-col items-center justify-center text-muted text-sm pointer-events-none px-6 text-center">
+        <div className={this.props.className || 'flex min-h-[320px] flex-col items-center justify-center text-muted text-sm px-6 text-center'}>
           <div className="mb-2">3D scene unavailable — falling back to text view.</div>
           <div className="text-xs opacity-60 max-w-md font-mono break-words">
             {this.state.errorMessage}

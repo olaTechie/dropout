@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Shell from './components/layout/Shell.jsx';
 import Landing from './routes/Landing.jsx';
 import Transcript from './routes/Transcript.jsx';
@@ -24,12 +24,13 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Shell><Landing /></Shell>} />
-      <Route path="/story" element={<Shell showChrome={false}><Suspense fallback={<Loader />}><Story /></Suspense></Shell>} />
+      <Route path="/story" element={<Shell><Suspense fallback={<Loader />}><Story /></Suspense></Shell>} />
       <Route path="/story/transcript" element={<Shell><Transcript /></Shell>} />
       <Route path="/policy" element={<Shell><Suspense fallback={<Loader />}><Policy /></Suspense></Shell>} />
-      <Route path="/simulation" element={<Shell showChrome={false}><Suspense fallback={<Loader />}><Simulation /></Suspense></Shell>} />
+      <Route path="/simulation" element={<Shell><Suspense fallback={<Loader />}><Simulation /></Suspense></Shell>} />
       <Route path="/explorer" element={<Shell><Suspense fallback={<Loader />}><Explorer /></Suspense></Shell>} />
       <Route path="/explorer/methods" element={<Shell><Suspense fallback={<Loader />}><Methods /></Suspense></Shell>} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

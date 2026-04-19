@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { useScenarioStore } from '../../state/scenario.js';
+import { buildHashURL } from '../../lib/paths.js';
 import BudgetSlider from './BudgetSlider.jsx';
 
-export default function SimulationControls({ cameraMode, setCameraMode, scale, setScale }) {
+export default function SimulationControls({
+  cameraMode,
+  setCameraMode,
+  scale,
+  setScale,
+  className = 'bg-abyss/80 backdrop-blur-lg border border-white/10',
+}) {
   const { interventions, toggleIntervention, rule, setRule } = useScenarioStore();
   const [copyStatus, setCopyStatus] = useState(null); // 'copied' | 'failed' | null
 
   const handleCopy = async () => {
     try {
       const { encodeToURL } = useScenarioStore.getState();
-      const url = `${window.location.origin}${window.location.pathname}?${encodeToURL()}`;
+      const url = buildHashURL('/simulation', encodeToURL());
       await navigator.clipboard.writeText(url);
       setCopyStatus('copied');
     } catch {
@@ -20,8 +27,11 @@ export default function SimulationControls({ cameraMode, setCameraMode, scale, s
   };
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-80 z-20 bg-abyss/80 backdrop-blur-lg border-r border-white/10 p-6 overflow-y-auto">
-      <h2 className="font-serif text-2xl mb-6">Simulation</h2>
+    <aside className={`w-full p-6 overflow-y-auto ${className}`}>
+      <h2 className="font-serif text-2xl mb-2">Simulation Controls</h2>
+      <p className="text-sm text-muted mb-6">
+        Tune the intervention mix, then copy a link that reopens this exact state.
+      </p>
 
       <fieldset className="mb-6">
         <legend className="text-xs uppercase tracking-wider text-muted mb-2">Camera</legend>

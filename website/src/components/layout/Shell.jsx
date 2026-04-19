@@ -7,7 +7,7 @@ export default function Shell({ children, showChrome = true }) {
     <div className="min-h-screen flex flex-col">
       <SkipLink />
       {showChrome && <Nav />}
-      <main id="main" className={showChrome ? 'pt-16 flex-1' : 'flex-1'}>{children}</main>
+      <main id="main" className={showChrome ? 'pt-24 flex-1' : 'flex-1'}>{children}</main>
       {showChrome && <Footer />}
     </div>
   );

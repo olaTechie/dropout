@@ -17,4 +17,24 @@
 }
 
 html, body, #root { height: 100%; }
-body { font-family: var(--font-sans); }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-moonlight);
+  background:
+    radial-gradient(circle at top, rgba(43, 67, 119, 0.9) 0%, rgba(14, 22, 36, 0.92) 32%, rgba(5, 7, 12, 1) 72%),
+    linear-gradient(180deg, #09111c 0%, #05070c 100%);
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+::selection {
+  background: rgba(245, 176, 66, 0.28);
+  color: var(--color-moonlight);
+}
