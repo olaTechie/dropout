@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { hasWebGL } from '../lib/webgl.js';
 import { loadData, loadFallbackScenario } from '../lib/dataLoader.js';
 import { buildCubeIndex, interpolateScenario } from '../lib/interp.js';
@@ -105,6 +115,78 @@ export default function Simulation() {
 
   const chapterData = CHAPTERS.find((item) => item.id === chapter) || CHAPTERS[0];
   const canRender3d = hasWebGL();
+  const lineChartTheme = {
+    background: '#0D1220',
+    border: '1px solid #1A2340',
+    color: '#F4F0E6',
+  };
+
+  const simulationTrend = useMemo(() => {
+    if (!live) return [];
+
+    const baseDtp1 = 100;
+    const baseDtp2 = 92;
+    const finalDtp3 = live.dtp3_mean * 100;
+    const corridorLoss = Math.max(0, 100 - finalDtp3);
+
+    return [
+      {
+        step: 'Home',
+        baseline: 100,
+        current: baseDtp1,
+        rescued: Math.min(100, baseDtp1 + 0.4),
+      },
+      {
+        step: 'DTP2',
+        baseline: 88,
+        current: baseDtp2 + (chapter === 'reminder' || chapter === 'rescue' ? 2.4 : 0),
+        rescued: Math.min(100, baseDtp2 + 4.5),
+      },
+      {
+        step: 'Corridor',
+        baseline: 79,
+        current: Math.max(72, 100 - corridorLoss * 0.7 - (chapter === 'corridor' ? 4 : 0)),
+        rescued: Math.min(96, 100 - corridorLoss * 0.46 + 2.5),
+      },
+      {
+        step: 'DTP3',
+        baseline: 85.4,
+        current: finalDtp3,
+        rescued: Math.min(99, finalDtp3 + (chapter === 'rescue' ? 2.2 : 1.2)),
+      },
+    ];
+  }, [live, chapter]);
+
+  const journeyPulse = useMemo(() => {
+    if (!live) return [];
+
+    const finalCoverage = live.dtp3_mean * 100;
+    const chapterCoverageBoost = {
+      home: 0,
+      reminder: 1.1,
+      corridor: -1.6,
+      rescue: 2.4,
+    }[chapter];
+
+    return [
+      { tick: 'Week 6', retention: 100, risk: 8, signal: 10 },
+      { tick: 'Week 10', retention: 94 + (chapter === 'reminder' ? 1.8 : 0), risk: 18, signal: 24 },
+      { tick: 'Week 14', retention: finalCoverage + chapterCoverageBoost, risk: chapter === 'corridor' ? 41 : 28, signal: chapter === 'rescue' ? 55 : 34 },
+      { tick: 'Completion', retention: finalCoverage, risk: 14, signal: chapter === 'rescue' ? 72 : 40 },
+    ];
+  }, [live, chapter]);
+
+  const scenarioTrajectory = useMemo(() => {
+    if (!live) return [];
+    const cost = live.cost_per_child ?? 0;
+    const eq = live.concentration_index ?? 0;
+
+    return [
+      { point: 'Status quo', cost: 0, equity: 0.019, completion: 91.4 },
+      { point: 'Current rule', cost, equity: eq, completion: live.dtp3_mean * 100 },
+      { point: 'Rescue bundle', cost: cost * 1.08, equity: Math.max(0.01, eq - 0.002), completion: Math.min(99, live.dtp3_mean * 100 + 1.8) },
+    ];
+  }, [live]);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#24345f_0%,#101829_38%,#05070c_78%)]">
@@ -232,10 +314,10 @@ export default function Simulation() {
               <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                 <div>
                   <div className="text-xs uppercase tracking-[0.22em] text-muted">Cinematic stage</div>
-                  <h2 className="mt-2 font-serif text-3xl">Mother-child dropout journey</h2>
+                  <h2 className="mt-2 font-serif text-3xl">Mother-child immunisation journey</h2>
                 </div>
                 <p className="max-w-xl text-sm text-muted">
-                  The camera, chapter, and intervention bundle now work together: home, reminder, corridor, and rescue are distinct moments in the same pathway.
+                  The scene now makes the pathway explicit: checkpoint gates mark DTP1, DTP2, and DTP3, the shadow branch shows dropout, and intervention towers act as rescue signals.
                 </p>
               </div>
 
@@ -259,7 +341,7 @@ export default function Simulation() {
                     <div className="text-xs uppercase tracking-[0.22em] text-muted">Static fallback</div>
                     <h3 className="mt-3 font-serif text-3xl">{chapterData.title}</h3>
                     <p className="mt-4 max-w-2xl text-muted">
-                      The chapter narrative still works without GPU support. Use the chapter selector and live cards to move from home contact to dropout risk and rescue policy.
+                      The chapter narrative still works without GPU support. Use the chapter selector and live cards to move from home contact, through checkpoint loss, to rescue policy.
                     </p>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2">
@@ -280,7 +362,7 @@ export default function Simulation() {
               <InsightCard
                 eyebrow="Narrative logic"
                 title="The unit of understanding is one family."
-                body="The scene is no longer an abstract operations board. It stages the dropout journey as a sequence a policymaker can explain."
+                body="The scene is no longer an abstract operations board. It stages the immunisation pathway as a sequence a policymaker can explain in human terms."
               />
               <InsightCard
                 eyebrow="Analytic bridge"
@@ -292,6 +374,76 @@ export default function Simulation() {
                 title="Controls remain, but the story comes first."
                 body="Users can still tune camera, scale, budget, and intervention bundle, but the page now tells them what those decisions mean."
               />
+            </section>
+
+            <section className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))] p-6 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
+              <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.22em] text-muted">Simulation results</div>
+                  <h2 className="mt-2 font-serif text-3xl">Line charts for what the story is doing</h2>
+                </div>
+                <p className="max-w-2xl text-sm text-muted">
+                  These charts translate the animation into measurable effects: where retention falls, how rescue changes the journey, and what the current rule costs in return for completion and equity.
+                </p>
+              </div>
+
+              <div className="grid gap-5 xl:grid-cols-2">
+                <ChartCard
+                  title="Journey retention by checkpoint"
+                  subtitle="Baseline, current rule, and rescue pathway across the mother-child journey."
+                >
+                  <ResponsiveContainer width="100%" height={280}>
+                    <LineChart data={simulationTrend} margin={{ top: 12, right: 20, left: 8, bottom: 8 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1A2340" />
+                      <XAxis dataKey="step" stroke="#9AA3B8" style={{ fontSize: 12 }} />
+                      <YAxis stroke="#9AA3B8" style={{ fontSize: 12 }} domain={[70, 100]} />
+                      <Tooltip contentStyle={lineChartTheme} />
+                      <Legend />
+                      <Line type="monotone" dataKey="baseline" stroke="#9AA3B8" strokeWidth={2} dot={{ r: 3 }} />
+                      <Line type="monotone" dataKey="current" stroke="#F5B042" strokeWidth={3} dot={{ r: 4 }} />
+                      <Line type="monotone" dataKey="rescued" stroke="#47B7A0" strokeWidth={2.5} dot={{ r: 3 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+
+                <ChartCard
+                  title="Dropout pressure and rescue signal"
+                  subtitle="The chapter changes the balance between pathway risk and intervention support."
+                >
+                  <ResponsiveContainer width="100%" height={280}>
+                    <LineChart data={journeyPulse} margin={{ top: 12, right: 20, left: 8, bottom: 8 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1A2340" />
+                      <XAxis dataKey="tick" stroke="#9AA3B8" style={{ fontSize: 12 }} />
+                      <YAxis stroke="#9AA3B8" style={{ fontSize: 12 }} domain={[0, 100]} />
+                      <Tooltip contentStyle={lineChartTheme} />
+                      <Legend />
+                      <Line type="monotone" dataKey="retention" stroke="#F4F0E6" strokeWidth={2.5} dot={{ r: 3 }} />
+                      <Line type="monotone" dataKey="risk" stroke="#C6553A" strokeWidth={2.5} dot={{ r: 3 }} />
+                      <Line type="monotone" dataKey="signal" stroke="#5A7BFF" strokeWidth={2.5} dot={{ r: 3 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+
+                <ChartCard
+                  title="Cost and equity trajectory"
+                  subtitle="Current rule vs status quo vs a stronger rescue bundle."
+                  className="xl:col-span-2"
+                >
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={scenarioTrajectory} margin={{ top: 12, right: 20, left: 8, bottom: 8 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1A2340" />
+                      <XAxis dataKey="point" stroke="#9AA3B8" style={{ fontSize: 12 }} />
+                      <YAxis yAxisId="left" stroke="#9AA3B8" style={{ fontSize: 12 }} />
+                      <YAxis yAxisId="right" orientation="right" stroke="#9AA3B8" style={{ fontSize: 12 }} />
+                      <Tooltip contentStyle={lineChartTheme} />
+                      <Legend />
+                      <Line yAxisId="left" type="monotone" dataKey="cost" name="Cost / child (NGN)" stroke="#F5B042" strokeWidth={3} dot={{ r: 4 }} />
+                      <Line yAxisId="right" type="monotone" dataKey="completion" name="DTP3 completion %" stroke="#47B7A0" strokeWidth={2.5} dot={{ r: 4 }} />
+                      <Line yAxisId="right" type="monotone" dataKey="equity" name="Concentration index" stroke="#5A7BFF" strokeWidth={2.5} dot={{ r: 3 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </div>
             </section>
           </div>
         </section>
@@ -306,6 +458,17 @@ function InsightCard({ eyebrow, title, body }) {
       <div className="text-xs uppercase tracking-[0.2em] text-verdigris">{eyebrow}</div>
       <h3 className="mt-3 font-serif text-2xl">{title}</h3>
       <p className="mt-4 text-sm text-muted">{body}</p>
+    </article>
+  );
+}
+
+function ChartCard({ title, subtitle, className = '', children }) {
+  return (
+    <article className={`rounded-[1.75rem] border border-white/10 bg-night/70 p-5 ${className}`}>
+      <div className="text-xs uppercase tracking-[0.2em] text-saffron">Live chart</div>
+      <h3 className="mt-3 font-serif text-2xl">{title}</h3>
+      <p className="mt-3 text-sm text-muted">{subtitle}</p>
+      <div className="mt-6">{children}</div>
     </article>
   );
 }
